@@ -134,6 +134,14 @@ export default async (request) => {
   if (UPSERT_ON[table]) { payload.performUpsert = { fieldsToMergeOn: UPSERT_ON[table] }; method = 'PATCH'; }
   const r = await fetch(`${API}/${encodeURIComponent(table)}`, { method, headers: auth(), body: JSON.stringify(payload) });
   const d = await r.json();
+  // A full registration (Status set) logs a row in Registrations, which sends the welcome email.
+  if (r.ok && table === 'Volunteers' && fields.Status && fields.Email) {
+    try {
+      await fetch(`${API}/Registrations`, { method: 'POST', headers: auth(), body: JSON.stringify({ records: [{ fields: clean({
+        Name: String(fields['Full Name'] || '').slice(0, 100), Email: fields.Email, Role: fields.Role, Team: fields.Team, 'Registered At': new Date().toISOString()
+      }) }], typecast: true }) });
+    } catch (e) { /* email is best effort */ }
+  }
   return r.ok ? json({ ok: true, id: d.records?.[0]?.id }) : json({ error: d.error || 'Airtable error' }, 502);
 };
 
