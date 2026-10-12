@@ -56,6 +56,52 @@ async function content() {
   };
 }
 
+// Every page of a table (Airtable returns 100 records per page).
+async function listAll(table, { fields, filter } = {}) {
+  const out = []; let offset = '';
+  do {
+    const p = new URLSearchParams();
+    (fields || []).forEach(f => p.append('fields[]', f));
+    if (filter) p.set('filterByFormula', filter);
+    if (offset) p.set('offset', offset);
+    const r = await fetch(`${API}/${encodeURIComponent(table)}?${p}`, { headers: auth() });
+    if (!r.ok) throw new Error('Airtable ' + r.status);
+    const d = await r.json();
+    (d.records || []).forEach(x => out.push({ id: x.id, ...x.fields }));
+    offset = d.offset || '';
+  } while (offset);
+  return out;
+}
+const num = v => { const n = Number(Array.isArray(v) ? v[0] : v); return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0; };
+
+// Admin console: every team, its leaders and contact details. Requires ADMIN_CODE.
+async function admin(body) {
+  const code = Netlify.env.get('ADMIN_CODE') || '';
+  if (code.length < 8 || String(body.code || '') !== code) return { status: 401, data: { error: 'Wrong passcode' } };
+  if (body.op === 'saveTeam') {
+    const f = body.fields || {};
+    const name = String(f.team || '').trim().slice(0, 40);
+    if (!name) return { status: 400, data: { error: 'Team name required' } };
+    const q = name.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    const found = await list('Teams', { fields: ['Team Name'], filter: `LOWER({Team Name})=LOWER("${q}")`, max: 1 });
+    const fields = { 'Team Name': name, Active: true, 'Company Contact': String(f.contact || '').slice(0, 100), 'Contact Email': f.email || undefined };
+    const rec = found.length ? { id: found[0].id, fields } : { fields };
+    const r = await fetch(`${API}/Teams`, { method: found.length ? 'PATCH' : 'POST', headers: auth(), body: JSON.stringify({ records: [rec], typecast: true }) });
+    return r.ok ? { status: 200, data: { ok: true } } : { status: 502, data: { error: 'Could not save team' } };
+  }
+  const [teams, vols] = await Promise.all([
+    listAll('Teams', { fields: ['Team Name', 'Active', 'Company Contact', 'Contact Email'] }),
+    listAll('Volunteers', { fields: ['Full Name', 'Email', 'Phone', 'Role', 'Team', 'Liability Waiver Signed', 'Total Approved Hours', 'Joined'], filter: `AND({Team}!="",{Full Name}!="",{Email}!="")` })
+  ]);
+  const map = new Map();
+  const get = n => { const k = n.toLowerCase(); if (!map.has(k)) map.set(k, { team: n, active: true, contact: '', contactEmail: '', members: [] }); return map.get(k); };
+  teams.forEach(t => { if (!t['Team Name']) return; const g = get(t['Team Name']); g.active = !!t.Active; g.contact = t['Company Contact'] || ''; g.contactEmail = t['Contact Email'] || ''; });
+  vols.forEach(v => get(v.Team).members.push({ name: v['Full Name'], email: v.Email || '', phone: v.Phone || '', role: v.Role || '', waiver: !!v['Liability Waiver Signed'], hours: num(v['Total Approved Hours']), joined: v.Joined || '' }));
+  const list2 = [...map.values()].map(g => ({ ...g, members: g.members.sort((a, b) => (b.role === 'Team Leader') - (a.role === 'Team Leader') || a.name.localeCompare(b.name)) }))
+    .sort((a, b) => a.team.localeCompare(b.team));
+  return { status: 200, data: { teams: list2 } };
+}
+
 // New team names from registration get a Teams record so they show in the portal list.
 async function ensureTeam(name, captain) {
   if (!name) return;
@@ -109,6 +155,11 @@ export default async (request) => {
       });
     }
     return json({ ok: true });
+  }
+
+  if (body.action === 'admin') {
+    try { const r = await admin(body); return json(r.data, r.status); }
+    catch (e) { return json({ error: 'Could not load teams' }, 502); }
   }
 
   // Team leader roster: names, roles, waiver status, approved hours. No contact details.
