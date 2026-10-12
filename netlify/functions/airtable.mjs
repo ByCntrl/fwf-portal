@@ -56,6 +56,17 @@ async function content() {
   };
 }
 
+// New team names from registration get a Teams record so they show in the portal list.
+async function ensureTeam(name, captain) {
+  if (!name) return;
+  try {
+    const q = name.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    const found = await list('Teams', { fields: ['Team Name'], filter: `LOWER({Team Name})=LOWER("${q}")`, max: 1 });
+    if (found.length) return;
+    await fetch(`${API}/Teams`, { method: 'POST', headers: auth(), body: JSON.stringify({ records: [{ fields: { 'Team Name': name, Captain: captain || '', Active: true } }], typecast: true }) });
+  } catch (e) { /* never block a registration */ }
+}
+
 export default async (request) => {
   const cors = {
     'Access-Control-Allow-Origin': Netlify.env.get('ALLOWED_ORIGIN') || '*',
@@ -100,8 +111,23 @@ export default async (request) => {
     return json({ ok: true });
   }
 
+  // Team leader roster: names, roles, waiver status, approved hours. No contact details.
+  if (body.action === 'roster') {
+    const email = String(body.email || '').trim().toLowerCase().slice(0, 200);
+    if (!/^[^@\s"\\]+@[^@\s"\\]+$/.test(email)) return json({ error: 'Email required' }, 400);
+    const leaders = await list('Volunteers', { fields: ['Full Name', 'Team', 'Role'], filter: `AND(LOWER({Email})="${email}",{Role}="Team Leader")`, max: 1 });
+    const lead = leaders[0];
+    if (!lead || !lead.Team) return json({ error: 'Not a team leader' }, 403);
+    const team = lead.Team;
+    const q = team.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    const rows = await list('Volunteers', { fields: ['Full Name', 'Role', 'Liability Waiver Signed', 'Total Approved Hours'], filter: `AND({Team}="${q}",{Full Name}!="")`, sort: ['Full Name'] });
+    const hrs = v => { const n = Number(Array.isArray(v) ? v[0] : v); return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0; };
+    return json({ team, leader: lead['Full Name'] || '', members: rows.map(x => ({ name: x['Full Name'], role: x.Role || '', waiver: !!x['Liability Waiver Signed'], hours: hrs(x['Total Approved Hours']) })) });
+  }
+
   const { table, fields } = body;
   if (!WRITABLE.has(table)) return json({ error: 'Table not allowed' }, 403);
+  if (table === 'Volunteers' && fields && fields.Team) await ensureTeam(String(fields.Team).slice(0, 40), fields['Full Name']);
   if (!fields || typeof fields !== 'object') return json({ error: 'Missing fields' }, 400);
   const payload = { records: [{ fields: clean(fields) }], typecast: true };
   let method = 'POST';
