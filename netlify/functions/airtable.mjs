@@ -80,10 +80,113 @@ async function listAll(table, { fields, filter } = {}) {
 }
 const num = v => { const n = Number(Array.isArray(v) ? v[0] : v); return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0; };
 
-// Admin console: every team, its leaders and contact details. Requires ADMIN_CODE.
+// ---------- Staff sign in (Staff Logins table) ----------
+// Passwords are stored only as PBKDF2 hashes. A signed session token (30 days) is
+// returned on sign in and checked, along with the Active box, on every admin call.
+const STAFF = 'Staff Logins';
+const SITE = 'https://portal.fightwrightfoundation.org';
+const enc = new TextEncoder();
+const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+const randHex = n => hex(crypto.getRandomValues(new Uint8Array(n)));
+const same = (a, b) => { a = String(a); b = String(b); if (a.length !== b.length) return false; let d = 0; for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i); return d === 0; };
+const okEmail = e => /^[^@\s"\\]+@[^@\s"\\]+\.[^@\s"\\]+$/.test(e);
+async function pbkdf2(pw, saltHex, iter) {
+  const key = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveBits']);
+  const salt = new Uint8Array(saltHex.match(/../g).map(h => parseInt(h, 16)));
+  return hex(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iter }, key, 256));
+}
+async function hashPw(pw) { const salt = randHex(16), it = 210000; return `pbkdf2$${it}$${salt}$${await pbkdf2(pw, salt, it)}`; }
+async function checkPw(pw, stored) {
+  const [k, it, salt, h] = String(stored || '').split('$');
+  if (k !== 'pbkdf2' || !salt || !h) return false;
+  return same(await pbkdf2(pw, salt, Number(it)), h);
+}
+async function hmac(s) {
+  const secret = Netlify.env.get('SESSION_SECRET') || ('fwf-session:' + Netlify.env.get('AIRTABLE_TOKEN'));
+  const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  return hex(await crypto.subtle.sign('HMAC', key, enc.encode(s)));
+}
+const b64 = s => btoa(unescape(encodeURIComponent(s))).replace(/=+$/, '').replace(/\+/g, '-').replace(/\//g, '_');
+const unb64 = s => decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))));
+async function makeToken(email) { const p = b64(JSON.stringify({ e: email, x: Date.now() + 30 * 864e5 })); return p + '.' + await hmac(p); }
+async function readToken(t) {
+  const [p, sig] = String(t || '').split('.');
+  if (!p || !sig || !same(await hmac(p), sig)) return null;
+  try { const d = JSON.parse(unb64(p)); return d.x > Date.now() ? d.e : null; } catch { return null; }
+}
+const staffBy = async filter => (await list(STAFF, { fields: ['Name', 'Email', 'Active', 'Password Hash', 'Setup Code', 'Setup Sent At', 'Failed Sign Ins', 'Locked Until'], filter, max: 1 }))[0];
+const patchStaff = (id, fields) => fetch(`${API}/${encodeURIComponent(STAFF)}`, { method: 'PATCH', headers: auth(), body: JSON.stringify({ records: [{ id, fields }], typecast: true }) });
+
+async function staffLogin(body) {
+  const email = String(body.email || '').trim().toLowerCase().slice(0, 200), pw = String(body.password || '');
+  const bad = { status: 401, data: { error: 'That email and password do not match.' } };
+  if (!okEmail(email) || !pw) return bad;
+  const s = await staffBy(`AND({Active},LOWER({Email})="${email}")`);
+  if (!s) return bad;
+  if (s['Locked Until'] && new Date(s['Locked Until']) > new Date()) return { status: 429, data: { error: 'Too many tries. Wait 15 minutes, then try again.' } };
+  if (!s['Password Hash']) return { status: 401, data: { error: 'You have not created a password yet. Ask an admin to send you a setup link.' } };
+  if (!(await checkPw(pw, s['Password Hash']))) {
+    const n = (s['Failed Sign Ins'] || 0) + 1;
+    await patchStaff(s.id, n >= 5 ? { 'Failed Sign Ins': 0, 'Locked Until': new Date(Date.now() + 15 * 6e4).toISOString() } : { 'Failed Sign Ins': n });
+    return bad;
+  }
+  await patchStaff(s.id, { 'Failed Sign Ins': 0, 'Locked Until': null, 'Last Sign In': new Date().toISOString() });
+  return { status: 200, data: { token: await makeToken(email), name: s.Name || '', email } };
+}
+async function staffSetup(body) {
+  const code = String(body.code || '').toLowerCase();
+  if (!/^[0-9a-f]{32}$/.test(code)) return { status: 400, data: { error: 'This setup link is not valid. Ask an admin for a new one.' } };
+  const s = await staffBy(`AND({Active},{Setup Code}="${code}")`);
+  const fresh = s && s['Setup Sent At'] && Date.now() - new Date(s['Setup Sent At']) < 14 * 864e5;
+  if (!s || !fresh || !s.Email) return { status: 400, data: { error: 'This setup link has expired or was already used. Ask an admin for a new one.' } };
+  if (!body.password) return { status: 200, data: { name: s.Name || '', email: s.Email.toLowerCase() } };
+  const pw = String(body.password);
+  if (pw.length < 8 || pw.length > 200) return { status: 400, data: { error: 'Use at least 8 characters.' } };
+  await patchStaff(s.id, { 'Password Hash': await hashPw(pw), 'Setup Code': '', 'Failed Sign Ins': 0, 'Locked Until': null, 'Last Sign In': new Date().toISOString() });
+  const email = s.Email.toLowerCase();
+  return { status: 200, data: { token: await makeToken(email), name: s.Name || '', email } };
+}
+async function staffOps(body, me) {
+  if (body.op === 'staff') {
+    const rows = await listAll(STAFF, { fields: ['Name', 'Email', 'Active', 'Password Hash', 'Setup Sent At', 'Last Sign In'] });
+    return { status: 200, data: { staff: rows.filter(r => r.Email).map(r => ({ id: r.id, name: r.Name || '', email: r.Email, active: !!r.Active, ready: !!r['Password Hash'], sent: r['Setup Sent At'] || '', last: r['Last Sign In'] || '' })).sort((a, b) => a.name.localeCompare(b.name)) } };
+  }
+  if (body.op === 'addStaff') {
+    const name = String(body.name || '').trim().slice(0, 100), email = String(body.email || '').trim().toLowerCase().slice(0, 200);
+    if (!name || !okEmail(email)) return { status: 400, data: { error: 'Enter a name and a valid email.' } };
+    const found = await staffBy(`LOWER({Email})="${email}"`);
+    const r = await fetch(`${API}/${encodeURIComponent(STAFF)}`, { method: found ? 'PATCH' : 'POST', headers: auth(), body: JSON.stringify({ records: [found ? { id: found.id, fields: { Name: name, Active: true } } : { fields: { Name: name, Email: email, Active: true } }], typecast: true }) });
+    if (!r.ok) return { status: 502, data: { error: 'Could not save.' } };
+    const d = await r.json();
+    return { status: 200, data: { id: d.records[0].id } };
+  }
+  if (body.op === 'staffLink' || body.op === 'staffActive') {
+    const id = String(body.id || '');
+    if (!/^rec[A-Za-z0-9]{14}$/.test(id)) return { status: 400, data: { error: 'Missing person.' } };
+    const g = await fetch(`${API}/${encodeURIComponent(STAFF)}/${id}`, { headers: auth() });
+    if (!g.ok) return { status: 404, data: { error: 'Not found.' } };
+    const rec = (await g.json()).fields || {};
+    if (body.op === 'staffActive') {
+      if (String(rec.Email || '').toLowerCase() === me) return { status: 400, data: { error: 'You cannot turn off your own access.' } };
+      await patchStaff(id, { Active: !!body.active });
+      return { status: 200, data: { ok: true } };
+    }
+    if (!rec.Active || !rec.Email) return { status: 400, data: { error: 'Turn on their access first.' } };
+    const code = randHex(16);
+    await patchStaff(id, { 'Setup Code': code, 'Setup Sent At': new Date().toISOString() });
+    return { status: 200, data: { link: `${SITE}/?setup=${code}`, name: rec.Name || '', email: rec.Email } };
+  }
+  return null;
+}
+
+// Admin console: every team, its leaders and contact details. Requires a staff session.
 async function admin(body) {
-  const code = Netlify.env.get('ADMIN_CODE') || '';
-  if (code.length < 8 || String(body.code || '') !== code) return { status: 401, data: { error: 'Wrong passcode' } };
+  const me = await readToken(body.token);
+  const who = me && await staffBy(`AND({Active},LOWER({Email})="${me}")`);
+  if (!who) return { status: 401, data: { error: 'Please sign in again.' } };
+  if (body.op === 'me') return { status: 200, data: { name: who.Name || '', email: me } };
+  const so = await staffOps(body, me);
+  if (so) return so;
   if (body.op === 'saveTeam') {
     const f = body.fields || {};
     const name = String(f.team || '').trim().slice(0, 40);
@@ -163,6 +266,11 @@ export default async (request) => {
       });
     }
     return json({ ok: true });
+  }
+
+  if (body.action === 'staffLogin' || body.action === 'staffSetup') {
+    try { const r = await (body.action === 'staffLogin' ? staffLogin(body) : staffSetup(body)); return json(r.data, r.status); }
+    catch (e) { return json({ error: 'Could not connect. Try again in a minute.' }, 502); }
   }
 
   if (body.action === 'admin') {
