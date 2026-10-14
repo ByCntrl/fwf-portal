@@ -35,15 +35,18 @@ async function list(table, { fields, filter, sort, max } = {}) {
 const img = a => (Array.isArray(a) && a[0] ? (a[0].thumbnails?.large?.url || a[0].url) : '');
 
 async function content() {
-  const [settings, teams, shifts, sponsors, ann, impact, staff] = await Promise.all([
-    list('Portal Settings', { fields: ['Donorbox Campaign URL', 'Shop URL', 'Waiver Text', 'Photo Release Text', 'Waiver Version'], max: 1 }),
+  const [settings, teams, shifts, sponsors, ann, impact, staff, booths, vendors] = await Promise.all([
+    list('Portal Settings', { fields: ['Donorbox Campaign URL', 'Shop URL', 'Waiver Text', 'Photo Release Text', 'Waiver Version', 'Festival Map'], max: 1 }),
     list('Teams', { fields: ['Team Name'], filter: '{Active}', sort: ['Team Name'] }),
     list('Shifts', { fields: ['Shift Name', 'Start', 'End', 'Location', 'Slots', 'Filled'], filter: "IS_AFTER({End}, DATEADD(NOW(), -1, 'days'))", sort: ['Start'] }),
     list('Sponsors', { fields: ['Sponsor Name', 'Tier', 'Logo', 'Website'], filter: '{Show on Walk Day}' }),
     list('Announcements', { fields: ['Title', 'Message', 'Sent At', 'Audience'], sort: ['Sent At', 'desc'], max: 5 }),
     list('Impact Levels', { fields: ['Amount', 'What It Funds'], sort: ['Amount'] }),
-    list('Admin Team', { fields: ['Full Name', 'Role in Organization', 'Photo', 'Bio'], filter: '{Show on Portal}', sort: ['Full Name'] })
+    list('Admin Team', { fields: ['Full Name', 'Role in Organization', 'Photo', 'Bio'], filter: '{Show on Portal}', sort: ['Full Name'] }),
+    list('Booths', { fields: ['Booth Number', 'Area'], filter: '{Active}', sort: ['Booth Number'] }),
+    list('Vendors', { fields: ['Business Name', 'Category', 'Description', 'Booth Number', 'Website', 'Instagram', 'Facebook', 'TikTok', 'Logo', 'Show on Map'], sort: ['Booth Number'] })
   ]);
+  const taken = new Set(vendors.map(v => v['Booth Number']).filter(n => n != null));
   const s = settings[0] || {};
   return {
     settings: { donorbox: s['Donorbox Campaign URL'] || '', shop: s['Shop URL'] || '', waiver: s['Waiver Text'] || '', photoRelease: s['Photo Release Text'] || '', version: s['Waiver Version'] || '' },
@@ -52,7 +55,10 @@ async function content() {
     sponsors: sponsors.map(x => [x['Sponsor Name'] || '', x.Tier || 'Community', img(x.Logo), x.Website || '']),
     announcements: ann.filter(a => !a.Audience || a.Audience === 'Everyone').map(a => [a.Title || '', a.Message || '', a['Sent At'] || '']),
     impact: impact.filter(i => i.Amount).map(i => [i.Amount, (i['What It Funds'] || '').replace(/\s*\(confirm with FWF\)/i, '')]),
-    team: staff.map(x => ({ name: x['Full Name'] || '', role: x['Role in Organization'] || '', photo: img(x.Photo), bio: x.Bio || '' }))
+    team: staff.map(x => ({ name: x['Full Name'] || '', role: x['Role in Organization'] || '', photo: img(x.Photo), bio: x.Bio || '' })),
+    map: img(s['Festival Map']),
+    booths: booths.filter(b => b['Booth Number'] != null).map(b => ({ n: b['Booth Number'], area: b.Area || '', taken: taken.has(b['Booth Number']) })),
+    vendors: vendors.filter(v => v['Show on Map'] && v['Business Name']).map(v => ({ name: v['Business Name'], cat: v.Category || '', desc: v.Description || '', booth: v['Booth Number'] ?? null, web: v.Website || '', ig: v.Instagram || '', fb: v.Facebook || '', tt: v.TikTok || '', logo: img(v.Logo) }))
   };
 }
 
@@ -162,6 +168,45 @@ export default async (request) => {
   if (body.action === 'admin') {
     try { const r = await admin(body); return json(r.data, r.status); }
     catch (e) { return json({ error: 'Could not load teams' }, 502); }
+  }
+
+  // Vendor booth profile: create or update by email, claim an open booth, optional logo.
+  if (body.action === 'vendor') {
+    const f = body.fields || {};
+    const s = (v, n = 200) => String(v || '').trim().slice(0, n);
+    const email = s(f.email).toLowerCase();
+    if (!/^[^@\s"\\]+@[^@\s"\\]+\.[^@\s"\\]+$/.test(email)) return json({ error: 'Enter a valid email.' }, 400);
+    if (!s(f.business)) return json({ error: 'Enter your business name.' }, 400);
+    const booth = Number(f.booth);
+    const [existing, boothRow, holder] = await Promise.all([
+      list('Vendors', { fields: ['Email', 'Booth Number'], filter: `LOWER({Email})="${email}"`, max: 1 }),
+      Number.isInteger(booth) ? list('Booths', { fields: ['Booth Number'], filter: `AND({Active},{Booth Number}=${booth})`, max: 1 }) : Promise.resolve([]),
+      Number.isInteger(booth) ? list('Vendors', { fields: ['Email'], filter: `{Booth Number}=${booth}`, max: 1 }) : Promise.resolve([])
+    ]);
+    if (!Number.isInteger(booth) || !boothRow.length) return json({ error: 'Choose an open booth.' }, 400);
+    if (holder.length && String(holder[0].Email || '').toLowerCase() !== email) return json({ error: 'That booth was just taken. Please choose another.', taken: true }, 409);
+    const url = v => { v = s(v, 300); return !v ? '' : /^https?:\/\//i.test(v) ? v : 'https://' + v; };
+    const fields = clean({
+      'Business Name': s(f.business, 120), 'Contact Name': s(f.contact, 100), Email: email, Phone: s(f.phone, 40),
+      Category: s(f.category, 60), Description: s(f.desc, 600), 'Booth Number': booth, Website: url(f.web),
+      Instagram: s(f.ig, 100), Facebook: s(f.fb, 200), TikTok: s(f.tt, 100), 'Special Requests': s(f.notes, 600),
+      'Submitted At': new Date().toISOString()
+    });
+    if (!existing.length) fields['Show on Map'] = true;
+    else if (body.logo && body.logo.file) fields.Logo = [];
+    const rec = existing.length ? { id: existing[0].id, fields } : { fields };
+    const r = await fetch(`${API}/Vendors`, { method: existing.length ? 'PATCH' : 'POST', headers: auth(), body: JSON.stringify({ records: [rec], typecast: true }) });
+    const d = await r.json();
+    if (!r.ok) return json({ error: 'Could not save. Please try again.' }, 502);
+    const id = d.records[0].id;
+    const ph = body.logo;
+    if (ph && ph.file && /^image\/(jpeg|png|webp)$/.test(ph.contentType) && ph.file.length < 7_000_000) {
+      await fetch(`https://content.airtable.com/v0/${BASE_ID}/${id}/Logo/uploadAttachment`, {
+        method: 'POST', headers: auth(),
+        body: JSON.stringify({ contentType: ph.contentType, file: ph.file, filename: (ph.filename || 'logo.png').slice(0, 80) })
+      });
+    }
+    return json({ ok: true, booth });
   }
 
   // Welcome Back: find a registration by email so returning people skip re-entering details.
