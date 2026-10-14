@@ -225,7 +225,12 @@ ${teamSelect()}
 const nt=$('#t-join [name=team]');if(INVITE)nt.value=INVITE;nt.onchange=()=>$('#newTeam').hidden=nt.value!=='__new';
 $('#t-join').onsubmit=e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));ME={name:f.name.trim(),email:f.email.trim().toLowerCase(),phone:f.phone,role:f.role,team:f.team==='__new'?(f.newteam||'').trim():f.team,for:f.for,ec:['','',''],waiver:0,photoRel:0,reminders:1,survivor:0};om('waiver',{first:1})};
 $('#t-sv').onsubmit=e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));ME={name:f.name.trim(),email:f.email.trim().toLowerCase(),phone:f.phone,role:'Survivor',team:'Sister Circle',for:'',dxy:f.dxy,wall:!!f.wall,ec:['','',''],waiver:0,photoRel:0,reminders:1,survivor:1};om('waiver',{first:1})};
-$('#t-back').onsubmit=e=>{e.preventDefault();const em=new FormData(e.target).get('email').trim().toLowerCase();if(ME&&ME.email===em){enter();toast('Welcome back, '+ME.name.split(' ')[0]);return}
+$('#t-back').onsubmit=async e=>{e.preventDefault();const em=new FormData(e.target).get('email').trim().toLowerCase();if(ME&&ME.email===em){enter();toast('Welcome back, '+ME.name.split(' ')[0]);return}
+const bb=e.target.querySelector('button.btn');bb.disabled=true;
+try{const r=await fetch(RELAY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'lookup',email:em})});if(!r.ok)throw 0;const d=await r.json();
+if(d.found){ME={name:d.name||'',email:em,phone:'',role:d.role||'Volunteer',team:d.team||'',for:d.for||'',ec:['','',''],waiver:d.waiver?1:0,photoRel:d.photoRel?1:0,reminders:d.reminders?1:0,survivor:d.role==='Survivor'?1:0,returning:1};saveMe();enter();toast('Welcome back, '+(ME.name.split(' ')[0]||'friend'));return}
+bb.disabled=false;toast('We could not find that email. Check the spelling, or tap Join Us to register.');return}
+catch(err){bb.disabled=false}
 ME={name:'',email:em,phone:'',role:'Volunteer',team:'',for:'',ec:['','',''],waiver:0,photoRel:0,reminders:1,survivor:0,returning:1};om('who')};
 $('#stn').value=ADM.sender||'';$('#t-st').onsubmit=async e=>{e.preventDefault();ADM.code=$('#stc').value;ADM.sender=$('#stn').value.trim();store.set('fwf-admin-name',ADM.sender);$('#stb').disabled=true;$('#sterr').hidden=true;try{await admLoad();store.set('fwf-admin',ADM.code);history.pushState(null,'','/admin');admRender();scrollTo(0,0)}catch(err){ADM.code='';$('#sterr').hidden=false;$('#sterr').textContent=err.status===401?'That passcode is not right.':'Could not connect. Try again in a minute.';$('#stb').disabled=false}};
 tick()}
