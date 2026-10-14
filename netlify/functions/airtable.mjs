@@ -164,6 +164,16 @@ export default async (request) => {
     catch (e) { return json({ error: 'Could not load teams' }, 502); }
   }
 
+  // Welcome Back: find a registration by email so returning people skip re-entering details.
+  if (body.action === 'lookup') {
+    const email = String(body.email || '').trim().toLowerCase().slice(0, 200);
+    if (!/^[^@\s"\\]+@[^@\s"\\]+$/.test(email)) return json({ error: 'Email required' }, 400);
+    const rows = await list('Volunteers', { fields: ['Full Name', 'Role', 'Team', 'Liability Waiver Signed', 'Photo Release Signed', 'Walking For', 'Reminder Channels'], filter: `LOWER({Email})="${email}"`, max: 1 });
+    const v = rows[0];
+    if (!v) return json({ found: false });
+    return json({ found: true, name: v['Full Name'] || '', role: v.Role || 'Volunteer', team: v.Team || '', waiver: !!v['Liability Waiver Signed'], photoRel: !!v['Photo Release Signed'], for: v['Walking For'] || '', reminders: (v['Reminder Channels'] || []).length > 0 });
+  }
+
   // Team leader roster: names, roles, waiver status, approved hours. No contact details.
   if (body.action === 'roster') {
     const email = String(body.email || '').trim().toLowerCase().slice(0, 200);
