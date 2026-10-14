@@ -479,7 +479,7 @@ async function admLoad(){const[d,s]=await Promise.all([admApi({op:'teams'}),admA
 function admRender(){
 const T=ADM.teams;
 $('#login').innerHTML=ADM_CSS+`<div class="adm">
-<div class="ad-top"><div class="row" style="gap:14px"><img src="${LOGO_DARK}" alt="Fight Wright Foundation"><div><h1>Teams</h1><p class="mu">${T.length} teams. Signed in as ${esc(ADM.sender||'admin')}.</p></div></div><div class="btns" style="margin:0"><button class="btn gh sm" data-x="admRefresh">Refresh</button><a class="btn gh sm" href="/">Volunteer portal</a><button class="btn gh sm" data-x="admOut">Sign out</button></div></div>
+<div class="ad-top"><div class="row" style="gap:14px"><img src="${LOGO_DARK}" alt="Fight Wright Foundation"><div><h1>Teams</h1><p class="mu">${T.length} teams. Signed in as ${esc(ADM.sender||'admin')}.</p></div></div><div class="btns" style="margin:0"><button class="btn gh sm" data-x="admRefresh">Refresh</button><a class="btn gh sm" href="/team">${I('user')}My profile photo</a><a class="btn gh sm" href="/">Volunteer portal</a><button class="btn gh sm" data-x="admOut">Sign out</button></div></div>
 <div class="ad-tc" mb14><div class="ad-th"><h3>Invite a company to build a team</h3></div><p class="mu" mb12>Creates the team, its invite link, the email to send, and the invitation letter to attach.</p>
 <form id="fInv"><div class="ad-two3"><label class="f"><span>Company or team name</span><input id="ivt" required placeholder="Crunch"></label><label class="f"><span>Point of contact name</span><input id="ivc" placeholder="Jordan Smith"></label><label class="f"><span>Their title (optional)</span><input id="ivti" placeholder="Community Engagement Manager"></label><label class="f"><span>Point of contact email</span><input id="ive" type="email" placeholder="jordan@company.com"></label><label class="f"><span>Team leader name (optional)</span><input id="ivl" placeholder="If they already picked one"></label><label class="f"><span>Team leader email (optional)</span><input id="ivle" type="email"></label></div><button class="btn">Save team and write email</button></form><div id="ivOut"></div></div>
 <div class="ad-tc" mb14><div class="ad-th"><h3>Invite vendors</h3></div><p class="mu" mb12>Send this link to confirmed vendors. It opens the booth profile form, where they pick a booth and add their logo and details. They show on the walk day vendor map right away.</p>
@@ -510,22 +510,45 @@ If you need to change anything later, open the same link and submit again with t
 Best regards,
 ${ADM.sender||'[Your name]'}
 Fight Wright Foundation`});
-const setupMail=(p,link)=>({subject:'Your Fight Wright staff sign in',body:`Hi ${(p.name||'').split(' ')[0]||'there'},
+const setupMail=(p,link)=>({subject:'Welcome to the Fight Wright staff portal',body:`Hi ${(p.name||'').split(' ')[0]||'there'},
 
-You now have staff access to the Fight Wright Foundation portal, where you can manage teams, invite companies and vendors, and send letters.
+Welcome to the Fight Wright Foundation staff portal! You now have staff access for the 5th Annual Pumpkins and Pink Ribbons 5K Walk and Festival on Saturday, October 24, 2026.
 
-Use this link to create your password. It works for 14 days:
+Step 1: Create your password
+Open this link and choose a password. It works for 14 days:
 ${link}
 
-After that, sign in any time at ${SITE} on the Staff tab with ${p.email}.
+Step 2: Add your photo and bio
+Upload a headshot and a short bio so volunteers, walkers, and survivors know who you are:
+${SITE}/team
 
-Best regards,
-${ADM.sender||'[Your name]'}
-Fight Wright Foundation`});
+Step 3: Poke around
+Once you are signed in, try these:
+- Invite a company you are working with to build a team
+- Open a team to see its roster, invite link, and letters
+- Copy the vendor link and take a look at the vendor booth form
+
+To sign in any time after today, go to ${SITE}, tap the Staff tab, and sign in with ${p.email} and your password.
+
+Questions or anything not working? Just reply to this email.
+
+Welcome to the team,
+Tyler, Jaden, and the Student Tech Team`});
 const admStaffCard=()=>`<div class="ad-tc" mb14><div class="ad-th"><h3>Staff access</h3></div><p class="mu" mb12>Everyone who can sign in here. Add someone, then send their setup link so they can create a password. Use the same button if someone forgets their password.</p>
-<form id="fStaff"><div class="ad-two3"><label class="f"><span>Name</span><input id="sfn" required placeholder="Jordan Smith"></label><label class="f"><span>Email</span><input id="sfe" type="email" required placeholder="jordan@fightwrightfoundation.org"></label></div><button class="btn">${I('plus')}Add and write setup email</button></form>
-<div class="ad-tw"><table><thead><tr><th>Name</th><th>Email</th><th>Status</th><th></th></tr></thead><tbody>${ADM.staff.map((p,i)=>`<tr><td>${esc(p.name)}${p.email===ADM.email?' (you)':''}</td><td>${esc(p.email)}</td><td>${!p.active?'Access off':p.ready?'Active':'Waiting for setup'}</td><td><div class="btns" style="margin:0;flex-wrap:nowrap">${p.active?`<button class="btn sm gh" data-x="admStaffMail" data-a="${i}">${I('send')}${p.ready?'Reset link':'Send setup link'}</button><button class="btn sm gh" data-x="admStaffCopy" data-a="${i}">${I('link')}Copy link</button>`:''}${p.email!==ADM.email?`<button class="btn sm gh" data-x="admStaffActive" data-a="${i}">${p.active?'Turn off':'Turn on'}</button>`:''}</div></td></tr>`).join('')||'<tr><td colspan="4" class="mu">No staff yet.</td></tr>'}</tbody></table></div></div>`;
-async function admStaffLink(i,mode){const p=ADM.staff[i];if(!p)return;try{const d=await admApi({op:'staffLink',id:p.id});if(mode==='copy')copyTxt(d.link,'Setup link copied. It works for 14 days.');else location.href=mailto(p.email,setupMail(p,d.link));admLoad().then(admRender).catch(()=>{})}catch(err){toast(err.message||'Could not make a link. Try again.')}}
+<form id="fStaff"><div class="ad-two3"><label class="f"><span>Name</span><input id="sfn" required placeholder="Jordan Smith"></label><label class="f"><span>Email</span><input id="sfe" type="email" required placeholder="jordan@fightwrightfoundation.org"></label></div><button class="btn">${I('plus')}Add and write welcome email</button></form><div id="sfOut"></div>
+<div class="ad-tw"><table><thead><tr><th>Name</th><th>Email</th><th>Status</th><th></th></tr></thead><tbody>${ADM.staff.map((p,i)=>`<tr><td>${esc(p.name)}${p.email===ADM.email?' (you)':''}</td><td>${esc(p.email)}</td><td>${!p.active?'Access off':p.ready?'Active':'Waiting for setup'}</td><td><div class="btns" style="margin:0;flex-wrap:nowrap">${p.active?`<button class="btn sm gh" data-x="admStaffMail" data-a="${i}">${I('send')}${p.ready?'Password reset email':'Welcome email'}</button><button class="btn sm gh" data-x="admStaffCopy" data-a="${i}">${I('link')}Copy link</button>`:''}${p.email!==ADM.email?`<button class="btn sm gh" data-x="admStaffActive" data-a="${i}">${p.active?'Turn off':'Turn on'}</button>`:''}</div></td></tr>`).join('')||'<tr><td colspan="4" class="mu">No staff yet.</td></tr>'}</tbody></table></div></div>`;
+const gmail=(to,m)=>`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to||'')}&su=${encodeURIComponent(m.subject)}&body=${encodeURIComponent(m.body)}`;
+async function admStaffLink(i,mode){const p=ADM.staff[i];if(!p)return;let d;try{d=await admApi({op:'staffLink',id:p.id})}catch(err){toast(err.message||'Could not make a link. Try again.');return}
+if(mode==='copy'){copyTxt(d.link,'Setup link copied. It works for 14 days.');return}
+try{await admLoad()}catch(e){}admRender();admStaffPreview(p,d.link)}
+function admStaffPreview(p,link){const m=setupMail(p,link);ADM.sf={p,link};
+$('#sfOut').innerHTML=`<div mt14><h3 class="sub3">Welcome email to ${esc(p.name||p.email)}</h3>
+<div class="ad-note">Their setup link is ready and works for 14 days. Send this email from any account. You can edit it first.</div>
+<label class="f"><span>To</span><input value="${esc(p.email)}" readonly></label>
+<label class="f"><span>Subject</span><input id="sfs" value="${esc(m.subject)}"></label><label class="f"><span>Message</span><textarea id="sfb">${esc(m.body)}</textarea></label>
+<div class="btns"><a class="btn" id="sfGm" target="_blank" rel="noopener" href="${gmail(p.email,m)}">${I('send')}Open in Gmail</a><a class="btn gh" id="sfMail" href="${mailto(p.email,m)}">${I('send')}Open in my email app</a><button class="btn gh" data-x="admStaffCopyMail">Copy email</button><button class="btn gh" data-x="admStaffCopyLink">${I('link')}Copy setup link only</button></div></div>`;
+const upd=()=>{const mm={subject:$('#sfs').value,body:$('#sfb').value};$('#sfGm').href=gmail(p.email,mm);$('#sfMail').href=mailto(p.email,mm)};$('#sfs').oninput=upd;$('#sfb').oninput=upd;
+$('#sfOut').scrollIntoView({behavior:'smooth',block:'start'})}
 function admTeam(t,i){const L=t.members.filter(m=>m.role==='Team Leader'),wv=t.members.filter(m=>m.waiver).length,hr=t.members.reduce((a,m)=>a+m.hours,0);
 return`<div class="ad-tc"><div class="ad-th"><div><h3>Team ${esc(t.team)}</h3>${t.contact||t.contactEmail?`<p class="mu">Point of contact: ${esc(t.contact)}${t.title?', '+esc(t.title):''}${t.contactEmail?` <a href="mailto:${esc(t.contactEmail)}">${esc(t.contactEmail)}</a>`:''}</p>`:''}${!L.length&&t.leader?`<p class="mu">Planned team leader: ${esc(t.leader)}${t.leaderEmail?` <a href="mailto:${esc(t.leaderEmail)}">${esc(t.leaderEmail)}</a>`:''}</p>`:''}</div>${L.length?`<span class="pl ok">${I('check')} Leader registered</span>`:'<span class="pl">No leader yet</span>'}</div>
 <div class="ad-stats"><div><b>${t.members.length}</b>members</div><div><b>${wv}</b>waivers signed</div><div><b>${Math.round(hr*100)/100}</b>approved hours</div></div>
@@ -538,6 +561,8 @@ admOut:()=>{store.set('fwf-admin-tok','');ADM.tok='';history.pushState(null,'','
 admVendCopy:()=>copyTxt(VENDOR_LINK,'Vendor link copied'),
 admStaffMail:(t,a)=>admStaffLink(+a,'mail'),
 admStaffCopy:(t,a)=>admStaffLink(+a,'copy'),
+admStaffCopyMail:()=>copyTxt('To: '+ADM.sf.p.email+'\nSubject: '+$('#sfs').value+'\n\n'+$('#sfb').value,'Email copied'),
+admStaffCopyLink:()=>copyTxt(ADM.sf.link,'Setup link copied'),
 admStaffActive:async(t,a)=>{const p=ADM.staff[+a];if(!p)return;try{await admApi({op:'staffActive',id:p.id,active:!p.active});await admLoad();admRender();toast(p.active?'Access turned off':'Access turned on')}catch(err){toast(err.message||'Could not update. Try again.')}},
 admCopyLink:(t,a)=>copyTxt(teamLink(a),'Invite link copied'),
 admCopyMail:()=>copyTxt('Subject: '+$('#ivs').value+'\n\n'+$('#ivb').value,'Email copied'),
