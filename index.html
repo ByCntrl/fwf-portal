@@ -128,7 +128,7 @@ const LOGO_DARK='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUoAAAC+CAYAAABTX
 /* ================================================================
    TEAM LEADERS: invite link, roster, company letters
    ================================================================ */
-const ORG={legal:'Fight Wright Foundation, Inc.',addr1:'1431 S Kingsway Rd, P.O. Box 372',addr2:'Seffner, FL 33584',phone:'(813) 215-7081',email:'events@fightwrightfoundation.org',web:'fightwrightfoundation.org',ein:'92-0584097',signer:'Dr. Vondalyn Wright',title:'Founder'};
+const ORG={legal:'Fight Wright Foundation, Inc.',addr1:'1431 S Kingsway Rd, P.O. Box 372',addr2:'Seffner, FL 33584',phone:'(813) 215-7081',email:'events@fightwrightfoundation.org',web:'fightwrightfoundation.org',ein:'92-0584097',signer:'Dr. Vondalyn Wright',title:'Founder and CEO'};
 const INVITE=(new URLSearchParams(location.search).get('team')||'').trim().slice(0,40);
 const isLeader=()=>ME&&ME.role==='Team Leader';
 const teamLink=t=>SITE+'/?team='+encodeURIComponent(t);
@@ -280,6 +280,7 @@ shifts:()=>`<section class="ban rib"><div class="bnl">${logo()}</div><div><p cla
 walk:()=>`<section class="hero"><div class="bnl">${logo()}</div><div class="bgl on" style="background:radial-gradient(circle at 80% 20%,#E8006F,transparent 55%),#0D0008"></div><span class="yr">Celebrating 5 years of Fighting Wright</span><h1><span class="orng">Pumpkins</span> and Pink Ribbons</h1><p style="color:#FFD3E7;max-width:48ch">5K Walk and Festival. Saturday, October 24, 10 AM to 2 PM at Perry Harvey Sr. Park. Wear pink, bring your family, bring your team.</p><div class="btns" style="margin:0"><button class="btn" data-m="cheer">${I('heart')}Send a cheer</button><button class="btn wh" data-v="give">${I('gift')}Give</button></div></section>
 ${eventCard()}
 ${festival()}
+<div class="card hype"><div class="ch"><h3>Share your walk day photos</h3></div><p class="mu" mb14>Upload your photos and videos from the walk and festival so Fight Wright can share the day with everyone.</p><a class="btn" href="https://weduploader.com/upload/NvMQCnzHZw6uNbLz" target="_blank" rel="noopener">${I('cam')}Upload photos</a></div>
 <div class="card"><div class="ch"><h3>Walk day checklist</h3></div><div class="list">${[['file','Sign your waiver in the portal','waiver'],['user','Add an emergency contact','prof'],['heart','Wear pink'],['users','Bring your family and your team'],['pin','Check in at the registration tent when you arrive']].map(r=>`<div>${ic(r[0])}<div class="t"><b>${r[1]}</b></div>${r[2]?`<button class="lk" data-m="${r[2]}">Open</button>`:''}</div>`).join('')}</div></div>
 ${sponsorWall()}`,
 give:()=>{const em=embedURL(C.settings.donorbox);return`<section class="ban rib"><div class="bnl">${logo()}</div><div><p class="kick">Every step makes an impact</p><h1>Give to Fight Wright</h1><p class="sub">501(c)(3) nonprofit. Your tax-deductible gift funds early detection, education, and support for survivors in our community.</p></div></section>
