@@ -81,6 +81,7 @@ img.mk{object-fit:contain;background:#fff;padding:3px}
 #von .vm{font-size:16px;line-height:1.6;color:#F6E3EC;margin:0 0 14px}
 #von .vs{font-size:14px;color:#D7B9C8;margin:0 0 24px;font-style:italic}
 #von .btn{padding:14px 30px;font-size:16px;box-shadow:0 8px 24px rgba(232,0,111,.45)}
+#von .vin{width:132px;height:132px;border-radius:50%;border:4px solid var(--pk);position:relative;z-index:1;background:var(--dk2);display:grid;place-items:center;font:52px/1 var(--bb);color:var(--pk);letter-spacing:.04em}
 @media (prefers-reduced-motion:reduce){#von .vfx{display:none}#von .vph:before,#von .vph:after{animation:none}#von .vc{transition:none}}
 </style><style>
 .main{margin-left:0!important}
@@ -444,7 +445,7 @@ catch(err){$('#terr').hidden=false;$('#tbtn').disabled=false;$('#tbtn').innerHTM
    ================================================================ */
 let ADM={tok:store.get('fwf-admin-tok',''),sender:store.get('fwf-admin-name',''),email:store.get('fwf-admin-email',''),teams:[],staff:[],open:{}};
 async function staffAuth(body){let r,d;try{r=await fetch(RELAY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});d=await r.json().catch(()=>({}))}catch(e){throw new Error('Could not connect. Try again in a minute.')}if(!r.ok)throw new Error(d.error||'Could not connect. Try again in a minute.');return d}
-async function admStart(d){ADM.tok=d.token;ADM.sender=d.name||'';ADM.email=d.email||'';store.set('fwf-admin-tok',ADM.tok);store.set('fwf-admin-name',ADM.sender);store.set('fwf-admin-email',ADM.email);await admLoad();history.pushState(null,'','/admin');admRender();scrollTo(0,0)}
+async function admStart(d){ADM.tok=d.token;ADM.sender=d.name||'';ADM.email=d.email||'';store.set('fwf-admin-tok',ADM.tok);store.set('fwf-admin-name',ADM.sender);store.set('fwf-admin-email',ADM.email);await admLoad();history.pushState(null,'','/admin');admRender();scrollTo(0,0);staffWelcome(ADM.sender,ADM.email)}
 async function admApi(body){const r=await fetch(RELAY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({action:'admin',token:ADM.tok},body))});const d=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(d.error||r.status);e.status=r.status;throw e}return d}
 const outreach=o=>{const team=o.team,c=team,first=(o.contact||'').trim().split(' ')[0],lf=(o.leader||'').trim().split(' ')[0];return{subject:`Invitation for ${c} to Build a Team for the Pumpkins and Pink Ribbons 5K`,body:`Hi ${first||'there'},
 
@@ -621,13 +622,26 @@ else if(ME&&ME.email&&ME.name)enter();else login();
 function isVon(){return !!ME&&(/vondalyn|\bdr\.?\s*von\b|\bvon\s+wright\b/i.test(ME.name||'')||(ME.email||'').toLowerCase()==='drvon@thewelltampa.com'||/vondalyn|drvon|drwright|dr\.wright/i.test(ME.email||''))}
 function vonWelcome(){
   try{if(sessionStorage.getItem('fwf-von'))return;sessionStorage.setItem('fwf-von','1')}catch(e){}
-  const d=document.createElement('div');d.id='von';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');d.setAttribute('aria-label','Welcome, Dr. Von');
+  showWelcome({photo:BAKED.drWright,alt:'Dr. Vondalyn Wright',kick:'A little surprise, just for you',h:'Welcome home,<br><span>Dr. Von</span>',msg:'This portal was built with love for you and the Fight Wright family. Every volunteer, walker, and survivor who signs up here is walking because you chose to live, not just exist.',btn:"Let's walk"});
+}
+function staffWelcome(name,email){
+  const key='fwf-welcomed-'+(email||name||'').toLowerCase();
+  try{if(localStorage.getItem(key))return;localStorage.setItem(key,'1')}catch(e){}
+  const von=/vondalyn|\bdr\.?\s*von\b|\bvon\s+wright\b/i.test(name||'')||/^drvon@thewelltampa\.com$|vondalyn|drvon|drwright|dr\.wright/i.test(email||'');
+  if(von)return showWelcome({photo:BAKED.drWright,alt:'Dr. Vondalyn Wright',kick:'A little surprise, just for you',h:'Welcome home,<br><span>Dr. Von</span>',msg:'This is your command center. Every team you build, every letter you send, and every volunteer you welcome starts right here. You built this movement, and now you get to run it from your fingertips.',btn:"Let's get to work"});
+  const first=((name||'').trim().split(/\s+/)[0])||'friend';
+  const m=(typeof C!=='undefined'&&C.team||[]).find(x=>x.photo&&(x.name||'').trim().toLowerCase()===(name||'').trim().toLowerCase());
+  showWelcome({photo:m?m.photo:'',alt:name||'',initials:(name||first).split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase(),kick:'Welcome to the Fight Wright team',h:`We are so glad<br>you are here, <span>${esc(first)}</span>`,msg:'You are officially part of the Fight Wright admin team. Every team you build, letter you send, and volunteer you welcome helps a survivor in Tampa Bay feel seen and supported.',btn:"Let's get to work"});
+}
+function showWelcome(o){
+  const d=document.createElement('div');d.id='von';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');d.setAttribute('aria-label','Welcome');
   let fx='';for(let k=0;k<26;k++){const s=12+Math.random()*20,l=Math.random()*100,dur=6+Math.random()*7,dl=-Math.random()*12,r=(Math.random()<.5?-1:1)*(180+Math.random()*360),h=k%3===0;fx+=`<svg viewBox="0 0 24 24" style="left:${l}%;width:${s}px;height:${s}px;animation-duration:${dur}s;animation-delay:${dl}s;--r:${r}deg;${h?'opacity:.55':''}"><use href="#${h?'heart':'rib'}"/></svg>`}
-  d.innerHTML=`<div class="vfx">${fx}</div><div class="vc"><div class="vph"><img src="${BAKED.drWright}" alt="Dr. Vondalyn Wright"><span class="vrb">${I('rib')}</span></div><p class="vk">A little surprise, just for you</p><h1>Welcome home,<br><span>Dr. Von</span></h1><p class="vm">This portal was built with love for you and the Fight Wright family. Every volunteer, walker, and survivor who signs up here is walking because you chose to live, not just exist.</p><p class="vs">With love, Tyler, Jaden, and the Student Tech Team</p><button class="btn" type="button">${I('heart')}Let's walk</button></div>`;
+  const pic=o.photo?`<img src="${o.photo}" alt="${esc(o.alt||'')}">`:`<span class="vin">${esc(o.initials||'')}</span>`;
+  d.innerHTML=`<div class="vfx">${fx}</div><div class="vc"><div class="vph">${pic}<span class="vrb">${I('rib')}</span></div><p class="vk">${o.kick}</p><h1>${o.h}</h1><p class="vm">${o.msg}</p><p class="vs">With love, Tyler, Jaden, and the Student Tech Team</p><button class="btn" type="button">${I('heart')}${o.btn}</button></div>`;
   document.body.appendChild(d);document.body.classList.add('lock');
   requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('on')));
-  const close=()=>{d.classList.add('off');document.body.classList.remove('lock');document.removeEventListener('keydown',esc);setTimeout(()=>d.remove(),550)};
-  const esc=e=>{if(e.key==='Escape')close()};document.addEventListener('keydown',esc);
+  const close=()=>{d.classList.add('off');document.body.classList.remove('lock');document.removeEventListener('keydown',esc2);setTimeout(()=>d.remove(),550)};
+  const esc2=e=>{if(e.key==='Escape')close()};document.addEventListener('keydown',esc2);
   const b=d.querySelector('button');b.onclick=close;setTimeout(()=>b.focus(),300);
 }
 </script>
