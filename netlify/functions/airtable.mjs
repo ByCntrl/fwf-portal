@@ -148,17 +148,40 @@ async function staffSetup(body) {
 }
 async function staffOps(body, me) {
   if (body.op === 'staff') {
-    const rows = await listAll(STAFF, { fields: ['Name', 'Email', 'Active', 'Password Hash', 'Setup Sent At', 'Last Sign In'] });
-    return { status: 200, data: { staff: rows.filter(r => r.Email).map(r => ({ id: r.id, name: r.Name || '', email: r.Email, active: !!r.Active, ready: !!r['Password Hash'], sent: r['Setup Sent At'] || '', last: r['Last Sign In'] || '' })).sort((a, b) => a.name.localeCompare(b.name)) } };
+    const rows = await listAll(STAFF, { fields: ['Name', 'Email', 'Phone', 'Active', 'Password Hash', 'Setup Sent At', 'Last Sign In'] });
+    return { status: 200, data: { staff: rows.filter(r => r.Email).map(r => ({ id: r.id, name: r.Name || '', email: r.Email, phone: r.Phone || '', active: !!r.Active, ready: !!r['Password Hash'], sent: r['Setup Sent At'] || '', last: r['Last Sign In'] || '' })).sort((a, b) => a.name.localeCompare(b.name)) } };
   }
   if (body.op === 'addStaff') {
     const name = String(body.name || '').trim().slice(0, 100), email = String(body.email || '').trim().toLowerCase().slice(0, 200);
+    const phone = String(body.phone || '').replace(/[^\d+()\-. ]/g, '').trim().slice(0, 30);
     if (!name || !okEmail(email)) return { status: 400, data: { error: 'Enter a name and a valid email.' } };
     const found = await staffBy(`LOWER({Email})="${email}"`);
-    const r = await fetch(`${API}/${encodeURIComponent(STAFF)}`, { method: found ? 'PATCH' : 'POST', headers: auth(), body: JSON.stringify({ records: [found ? { id: found.id, fields: { Name: name, Active: true } } : { fields: { Name: name, Email: email, Active: true } }], typecast: true }) });
+    const r = await fetch(`${API}/${encodeURIComponent(STAFF)}`, { method: found ? 'PATCH' : 'POST', headers: auth(), body: JSON.stringify({ records: [found ? { id: found.id, fields: { Name: name, Active: true, ...(phone ? { Phone: phone } : {}) } } : { fields: { Name: name, Email: email, Active: true, ...(phone ? { Phone: phone } : {}) } }], typecast: true }) });
     if (!r.ok) return { status: 502, data: { error: 'Could not save.' } };
     const d = await r.json();
     return { status: 200, data: { id: d.records[0].id } };
+  }
+  if (body.op === 'profile' || body.op === 'saveProfile') {
+    const T = 'Admin Team';
+    const rows = await list(T, { fields: ['Full Name', 'Role in Organization', 'Bio', 'Phone', 'Email', 'Photo', 'Show on Portal', 'Submitted At'], filter: `LOWER(TRIM({Email}))="${me}"`, sort: ['Submitted At', 'desc'], max: 1 });
+    const cur = rows[0];
+    if (body.op === 'profile') {
+      return { status: 200, data: { profile: cur ? { name: (cur['Full Name'] || '').trim(), role: (cur['Role in Organization'] || '').trim(), bio: cur.Bio || '', phone: cur.Phone || '', photo: img(cur.Photo), shown: !!cur['Show on Portal'] } : null } };
+    }
+    const f = body.fields || {};
+    const fields = { 'Full Name': String(f.name || '').trim().slice(0, 100), 'Role in Organization': String(f.role || '').trim().slice(0, 100), Bio: String(f.bio || '').slice(0, 1200), Phone: String(f.phone || '').replace(/[^\d+()\-. ]/g, '').trim().slice(0, 30) || null, Email: me, 'Submitted At': new Date().toISOString(), 'Show on Portal': true };
+    if (!fields['Full Name']) return { status: 400, data: { error: 'Enter your name.' } };
+    const ph = body.photo;
+    const newPhoto = ph && ph.file && /^image\/(jpeg|png|webp)$/.test(ph.contentType) && ph.file.length < 7_000_000;
+    if (newPhoto && cur) fields.Photo = [];
+    const r = await fetch(`${API}/${encodeURIComponent(T)}`, { method: cur ? 'PATCH' : 'POST', headers: auth(), body: JSON.stringify({ records: [cur ? { id: cur.id, fields } : { fields }], typecast: true }) });
+    if (!r.ok) return { status: 502, data: { error: 'Could not save. Please try again.' } };
+    const id = (await r.json()).records[0].id;
+    if (newPhoto) {
+      const u = await fetch(`https://content.airtable.com/v0/${BASE_ID}/${id}/Photo/uploadAttachment`, { method: 'POST', headers: auth(), body: JSON.stringify({ contentType: ph.contentType, file: ph.file, filename: (ph.filename || 'photo.jpg').slice(0, 80) }) });
+      if (!u.ok) return { status: 502, data: { error: 'Your details saved, but the photo did not upload. Try the photo again.' } };
+    }
+    return { status: 200, data: { ok: true } };
   }
   if (body.op === 'staffLink' || body.op === 'staffActive') {
     const id = String(body.id || '');
@@ -195,18 +218,19 @@ async function admin(body) {
     const found = await list('Teams', { fields: ['Team Name'], filter: `LOWER({Team Name})=LOWER("${q}")`, max: 1 });
     const s = v => String(v || '').trim().slice(0, 100);
     const em = v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(v || '').trim()) ? String(v).trim() : null;
-    const fields = { 'Team Name': name, Active: true, 'Company Contact': s(f.contact), 'Contact Title': s(f.title), 'Contact Email': em(f.email), 'Planned Leader': s(f.leader), 'Planned Leader Email': em(f.leaderEmail) };
+    const ph = v => String(v || '').replace(/[^\d+()\-. ]/g, '').trim().slice(0, 30) || null;
+    const fields = { 'Team Name': name, Active: true, 'Company Contact': s(f.contact), 'Contact Title': s(f.title), 'Contact Email': em(f.email), 'Contact Phone': ph(f.phone), 'Planned Leader': s(f.leader), 'Planned Leader Email': em(f.leaderEmail), 'Planned Leader Phone': ph(f.leaderPhone) };
     const rec = found.length ? { id: found[0].id, fields } : { fields };
     const r = await fetch(`${API}/Teams`, { method: found.length ? 'PATCH' : 'POST', headers: auth(), body: JSON.stringify({ records: [rec], typecast: true }) });
     return r.ok ? { status: 200, data: { ok: true } } : { status: 502, data: { error: 'Could not save team' } };
   }
   const [teams, vols] = await Promise.all([
-    listAll('Teams', { fields: ['Team Name', 'Active', 'Company Contact', 'Contact Title', 'Contact Email', 'Planned Leader', 'Planned Leader Email'] }),
+    listAll('Teams', { fields: ['Team Name', 'Active', 'Company Contact', 'Contact Title', 'Contact Email', 'Contact Phone', 'Planned Leader', 'Planned Leader Email', 'Planned Leader Phone'] }),
     listAll('Volunteers', { fields: ['Full Name', 'Email', 'Phone', 'Role', 'Team', 'Liability Waiver Signed', 'Total Approved Hours', 'Joined'], filter: `AND({Team}!="",{Full Name}!="",{Email}!="")` })
   ]);
   const map = new Map();
-  const get = n => { const k = n.toLowerCase(); if (!map.has(k)) map.set(k, { team: n, active: true, contact: '', title: '', contactEmail: '', leader: '', leaderEmail: '', members: [] }); return map.get(k); };
-  teams.forEach(t => { if (!t['Team Name']) return; const g = get(t['Team Name']); g.active = !!t.Active; g.contact = t['Company Contact'] || ''; g.title = t['Contact Title'] || ''; g.contactEmail = t['Contact Email'] || ''; g.leader = t['Planned Leader'] || ''; g.leaderEmail = t['Planned Leader Email'] || ''; });
+  const get = n => { const k = n.toLowerCase(); if (!map.has(k)) map.set(k, { team: n, active: true, contact: '', title: '', contactEmail: '', contactPhone: '', leader: '', leaderEmail: '', leaderPhone: '', members: [] }); return map.get(k); };
+  teams.forEach(t => { if (!t['Team Name']) return; const g = get(t['Team Name']); g.active = !!t.Active; g.contact = t['Company Contact'] || ''; g.title = t['Contact Title'] || ''; g.contactEmail = t['Contact Email'] || ''; g.leader = t['Planned Leader'] || ''; g.leaderEmail = t['Planned Leader Email'] || ''; g.contactPhone = t['Contact Phone'] || ''; g.leaderPhone = t['Planned Leader Phone'] || ''; });
   vols.forEach(v => get(v.Team).members.push({ name: v['Full Name'], email: v.Email || '', phone: v.Phone || '', role: v.Role || '', waiver: !!v['Liability Waiver Signed'], hours: num(v['Total Approved Hours']), joined: v.Joined || '' }));
   const list2 = [...map.values()].map(g => ({ ...g, members: g.members.sort((a, b) => (b.role === 'Team Leader') - (a.role === 'Team Leader') || a.name.localeCompare(b.name)) }))
     .sort((a, b) => a.team.localeCompare(b.team));
@@ -321,10 +345,16 @@ export default async (request) => {
   if (body.action === 'lookup') {
     const email = String(body.email || '').trim().toLowerCase().slice(0, 200);
     if (!/^[^@\s"\\]+@[^@\s"\\]+$/.test(email)) return json({ error: 'Email required' }, 400);
-    const rows = await list('Volunteers', { fields: ['Full Name', 'Role', 'Team', 'Liability Waiver Signed', 'Photo Release Signed', 'Walking For', 'Reminder Channels'], filter: `LOWER({Email})="${email}"`, max: 1 });
+    const [rows, sups] = await Promise.all([
+      list('Volunteers', { fields: ['Full Name', 'Role', 'Team', 'Liability Waiver Signed', 'Photo Release Signed', 'Walking For', 'Reminder Channels', 'Phone', 'Emergency Contact Name'], filter: `LOWER({Email})="${email}"`, max: 1 }),
+      list('Shift Signups', { fields: ['Shift', 'Status'], filter: `LOWER({Email})="${email}"` })
+    ]);
     const v = rows[0];
     if (!v) return json({ found: false });
-    return json({ found: true, name: v['Full Name'] || '', role: v.Role || 'Volunteer', team: v.Team || '', waiver: !!v['Liability Waiver Signed'], photoRel: !!v['Photo Release Signed'], for: v['Walking For'] || '', reminders: (v['Reminder Channels'] || []).length > 0 });
+    // Private details (phone numbers, emergency contact, medical notes) are never sent back.
+    // The phone only learns they are on file, so nothing is asked twice and nothing is erased.
+    const shifts = [...new Set(sups.filter(x => x.Status !== 'Cancelled').flatMap(x => x.Shift || []))];
+    return json({ found: true, name: v['Full Name'] || '', role: v.Role || 'Volunteer', team: v.Team || '', waiver: !!v['Liability Waiver Signed'], photoRel: !!v['Photo Release Signed'], for: v['Walking For'] || '', reminders: (v['Reminder Channels'] || []).length > 0, phoneOnFile: !!v.Phone, ecOnFile: !!v['Emergency Contact Name'], shifts });
   }
 
   // Team leader roster: names, roles, waiver status, approved hours. No contact details.
