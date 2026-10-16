@@ -133,10 +133,11 @@ const ORG={legal:'Fight Wright Foundation, Inc.',addr1:'1431 S Kingsway Rd, P.O.
 const INVITE=(new URLSearchParams(location.search).get('team')||'').trim().slice(0,40);
 const isLeader=()=>ME&&ME.role==='Team Leader';
 const teamLink=t=>SITE+'/?team='+encodeURIComponent(t);
+const letterLink=(t,k)=>SITE+'/?letter='+encodeURIComponent(t)+'&k='+encodeURIComponent(k||'');
 async function rosterFetch(){const r=await fetch(RELAY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'roster',email:ME.email})});if(!r.ok)throw new Error(r.status);return r.json()}
 const leaderCard=()=>!isLeader()?'':ME.team?`<div class="card hype"><div class="ch"><h3>Team ${esc(ME.team)}</h3><span class="pl pk">Team Leader</span></div><p class="mu" mb14>Recruit your team, see who has joined, and download letters for your company's volunteer program.</p><div class="btns"><button class="btn" data-m="tinvite">${I('share')}Invite members</button><button class="btn gh" data-m="roster">${I('users')}Team roster</button><button class="btn gh" data-m="letters">${I('file')}Company letters</button></div></div>`:`<div class="gps off">${ic('users')}<div style="flex:1;min-width:200px"><b>Name your team</b><p class="mu">Add a team name to get your invite link and team tools.</p></div><button class="btn" data-m="tname">Add team name</button></div>`;
 const fmtLong=d=>new Date(d).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-function letterDoc(kind,o){
+function letterDoc(kind,o,pub){
 const head=`<header><img src="${LOGO_DARK}" alt="Fight Wright Foundation"><div class="org"><b>${ORG.legal}</b><span>${ORG.addr1}</span><span>${ORG.addr2}</span><span><a href="tel:+18132157081">${ORG.phone}</a> &middot; <a href="mailto:${ORG.email}">${ORG.email}</a></span></div></header><div class="rule"></div>`;
 const foot=`<footer>${ORG.legal} is a 501(c)(3) nonprofit organization. EIN ${ORG.ein}. <a href="https://${ORG.web}">${ORG.web}</a></footer>`;
 const to=`<p>${fmtLong(Date.now())}</p><p>${esc(o.contact||'Volunteer Program Coordinator')}${o.title?'<br>'+esc(o.title):''}<br>${esc(o.company)}</p>`;
@@ -157,19 +158,21 @@ body=`${to}<p class="re">RE: Verification of Volunteer Hours, Team ${esc(o.team)
 <table class="hrs"><thead><tr><th>Volunteer</th><th>Hours</th></tr></thead><tbody>${m.map(x=>`<tr><td>${esc(x.name)}</td><td>${x.hours}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td>${tot}</td></tr></tfoot></table>
 <p>Hours listed reflect volunteer time recorded and approved by ${ORG.legal} as of ${fmtLong(Date.now())}. To confirm any information in this letter, please contact us at <a href="mailto:${ORG.email}">${ORG.email}</a> or <a class="nb" href="tel:+18132157081">${ORG.phone}</a>.</p>
 <p>We are grateful for the time and care these volunteers gave to our community.</p>${sign}`}
-return`<!doctype html><html><head><meta charset="utf-8"><title>${kind==='inv'?'Volunteer Opportunity Confirmation':'Volunteer Hours Verification'} - ${esc(o.team)}</title><style>
+return`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${kind==='inv'?'Volunteer Opportunity Confirmation':'Volunteer Hours Verification'} - ${esc(o.team)}</title><style>
 @page{size:letter;margin:0}*{box-sizing:border-box}html,body{margin:0;background:#fff;color:#221019;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .pg{width:8.5in;min-height:11in;margin:0 auto;padding:.6in .85in .85in;position:relative;font:10.5pt/1.5 Georgia,"Times New Roman",serif}
 header{display:flex;justify-content:space-between;align-items:center;gap:24px}header img{height:74px}.org{text-align:right;font:9pt/1.5 Helvetica,Arial,sans-serif;color:#76606B;display:flex;flex-direction:column}.org b{color:#221019;font-size:10pt;letter-spacing:.02em}
 .rule{height:3px;background:linear-gradient(90deg,#E8006F,#B8005A);margin:14px 0 24px}
-.nb{white-space:nowrap}a{color:#B8005A}.org a{color:inherit;text-decoration:none}p{margin:0 0 10px}.re{font-weight:bold;margin:14px 0}
-table{border-collapse:collapse;width:100%;margin:6px 0 16px;font-size:10.5pt}.kv th{text-align:left;width:1.5in;color:#76606B;font-weight:normal;padding:5px 10px 5px 0;vertical-align:top}.kv td{padding:5px 0;word-break:break-all}
+.nb{white-space:nowrap}a{color:#B8005A;text-decoration:underline;text-underline-offset:2px}.org a{color:#B8005A}p{margin:0 0 10px}.re{font-weight:bold;margin:14px 0}
+table{border-collapse:collapse;width:100%;margin:6px 0 16px;font-size:10.5pt}.kv th{text-align:left;width:1.5in;color:#76606B;font-weight:normal;padding:5px 10px 5px 0;vertical-align:top}.kv td{padding:5px 0;overflow-wrap:anywhere}
 .hrs th,.hrs td{border-bottom:1px solid #EEE0E7;padding:7px 4px;text-align:left}.hrs th:last-child,.hrs td:last-child{text-align:right;width:1in}.hrs thead th{border-bottom:2px solid #221019}.hrs tfoot td{font-weight:bold;border-bottom:0}
 .sig{height:36px;border-bottom:1px solid #221019;width:3in;margin:18px 0 6px}.nm{font-size:10.5pt}
 footer{position:absolute;left:.85in;right:.85in;bottom:.45in;border-top:1px solid #EEE0E7;padding-top:8px;font:8pt Helvetica,Arial,sans-serif;color:#76606B;text-align:center}
 .bar{font:13px Helvetica,Arial,sans-serif;text-align:center;padding:12px;background:#FDE8F2}.bar button{font:inherit;background:#E8006F;color:#fff;border:0;border-radius:6px;padding:8px 16px;cursor:pointer}
 @media print{.bar{display:none}}
-</style></head><body><div class="bar"><button onclick="window.close()" style="background:#fff;color:#221019;border:1px solid #E5D5DD;margin-right:8px">Back to portal</button><button onclick="print()">Print or save as PDF</button></div><div class="pg">${head}${body}${foot}</div></body></html>`}
+.bar a.bb{display:inline-block;font:inherit;background:#fff;color:#221019;border:1px solid #E5D5DD;border-radius:6px;padding:7px 16px;margin-left:8px;text-decoration:none}.bar p{margin:8px 0 0;color:#76606B;font-size:12px}
+@media screen and (max-width:860px){.pg{width:auto;min-height:0;padding:22px 18px 26px;font-size:15px}header{flex-direction:column;align-items:flex-start;gap:12px}header img{height:60px}.org{text-align:left}footer{position:static;margin-top:26px}.kv th,.kv td{display:block;width:auto;padding:2px 0}.kv th{padding-top:8px}.bar button,.bar a.bb{margin:4px}}
+</style></head><body><div class="bar">${pub?`<button onclick="print()">Download or print PDF</button>${kind==='inv'?`<a class="bb" href="${esc(teamLink(o.team))}">Register for Team ${esc(o.team)}</a>`:''}<p>On a phone, tap Download, then Save to Files or Save as PDF.</p>`:`<button onclick="window.close()" style="background:#fff;color:#221019;border:1px solid #E5D5DD;margin-right:8px">Back to portal</button><button onclick="print()">Print or save as PDF</button>`}</div><div class="pg">${head}${body}${foot}</div></body></html>`}
 function openLetter(kind,o){const w=window.open('','_blank');if(!w){toast('Allow pop-ups to open the letter');return null}w.document.write('<p style="font:15px sans-serif;padding:24px">Preparing your letter...</p>');return w}
 
 /* ================================================================
@@ -448,7 +451,8 @@ ${teamLink(team)}
 
 Once registered, the team leader can invite coworkers with a personal team link, see who has joined, and download official letters for ${c}'s volunteer program, including a volunteer hours verification letter after the event.
 
-Attached is our volunteer opportunity letter on Fight Wright Foundation letterhead, which includes our 501(c)(3) status and EIN.
+${o.sig?`Here is our volunteer opportunity letter on Fight Wright Foundation letterhead, which includes our 501(c)(3) status and EIN. You can open it, download it as a PDF, or forward it:
+${letterLink(team,o.sig)}`:`Attached is our volunteer opportunity letter on Fight Wright Foundation letterhead, which includes our 501(c)(3) status and EIN.`}
 
 Please feel free to forward this email to anyone at ${c} who would like to lead or join the team. We look forward to walking with you.
 
@@ -471,7 +475,7 @@ ${ADM.sender||'[Your name]'}
 Fight Wright Foundation`});
 const mailto=(to,m,cc)=>`mailto:${encodeURIComponent(to||'')}?${cc?`cc=${encodeURIComponent(cc)}&`:''}subject=${encodeURIComponent(m.subject)}&body=${encodeURIComponent(m.body)}`;
 const copyTxt=(t,msg)=>(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast(msg||'Copied'),()=>toast('Select the text and copy it'));
-function admDetails(t){const reg=t.members.find(m=>m.role==='Team Leader');return{team:t.team,company:t.team,contact:t.contact||'',title:t.title||'',contactEmail:t.contactEmail||'',contactPhone:t.contactPhone||'',leader:reg?reg.name:(t.leader||''),leaderEmail:reg?reg.email:(t.leaderEmail||''),leaderPhone:reg&&reg.phone?reg.phone:(t.leaderPhone||'')}}
+function admDetails(t){const reg=t.members.find(m=>m.role==='Team Leader');return{team:t.team,company:t.team,contact:t.contact||'',title:t.title||'',contactEmail:t.contactEmail||'',contactPhone:t.contactPhone||'',leader:reg?reg.name:(t.leader||''),leaderEmail:reg?reg.email:(t.leaderEmail||''),leaderPhone:reg&&reg.phone?reg.phone:(t.leaderPhone||''),sig:t.sig||''}}
 function admLetter(kind,t,d){const w=openLetter();if(!w)return;const o=Object.assign(admDetails(t),d||{},{members:t.members});const h=kind==='hrs'&&!t.members.some(x=>x.hours>0)?`<p style="font:15px sans-serif;padding:24px;max-width:520px">No approved volunteer hours have been recorded for Team ${esc(t.team)} yet. Approve hours in the Hours Log in Airtable, then open this letter again.</p>`:letterDoc(kind,o);w.document.open();w.document.write(h);w.document.close()}
 function admCSV(t){const rows=[['Name','Email','Phone','Role','Waiver signed','Approved hours','Joined']].concat(t.members.map(m=>[m.name,m.email,m.phone,m.role,m.waiver?'Yes':'No',m.hours,m.joined]));dl(URL.createObjectURL(new Blob([rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\r\n')],{type:'text/csv'})),`team-${t.team.replace(/\W+/g,'-').toLowerCase()}-roster.csv`)}
 
@@ -507,14 +511,28 @@ $('#fStaff').onsubmit=async e=>{e.preventDefault();const name=$('#sfn').value.tr
 function admCompose(team){const t=ADM.teams.find(x=>x.team.toLowerCase()===team.toLowerCase())||{team,members:[]};const d=admDetails(t),m=outreach(d),email=d.contactEmail,cc=d.leaderEmail&&d.leaderEmail!==email?d.leaderEmail:'';ADM.cur={t,m};
 ['ivt','ivc','ivti','ive','ivp','ivl','ivle','ivlp'].forEach((k,i)=>{const el=$('#'+k);if(el)el.value=[d.team,d.contact,d.title,d.contactEmail,d.contactPhone,d.leader,d.leaderEmail,d.leaderPhone][i]});
 $('#ivOut').innerHTML=`<div mt14><h3 class="sub3">Email to ${esc(d.contact||team)}${cc?' (copying '+esc(d.leader||cc)+')':''}</h3>
-<div class="ad-note"><b>Before you send:</b> click <b>Invitation letter</b>, then <b>Print or save as PDF</b>, save the PDF, and attach it to the email.</div>
+<div class="ad-note">${d.sig?'<b>Nothing to attach.</b> The link to your 501(c)(3) invitation letter is already in this email and in the text invite.':'<b>Before you send:</b> click <b>Invitation letter</b>, then <b>Print or save as PDF</b>, save the PDF, and attach it to the email.'}</div>
 <label class="f"><span>Subject</span><input id="ivs" value="${esc(m.subject)}"></label><label class="f"><span>Message</span><textarea id="ivb">${esc(m.body)}</textarea></label>
-<div class="btns"><a class="btn" id="ivGm" target="_blank" rel="noopener" href="${gmail(email,m)}">${I('send')}Open in Gmail</a><a class="btn gh" id="ivMail" href="${mailto(email,m,cc)}">${I('send')}Open in my email app</a><a class="btn gh" href="${smsHref(d.contactPhone||d.leaderPhone,teamSms(d))}">${I('phone')}Text invite${d.contactPhone||d.leaderPhone?' to '+esc((d.contactPhone?d.contact:d.leader)||'them'):''}</a><button class="btn gh" data-x="admCopyMail">Copy email</button><button class="btn gh" data-x="admInvLetter">${I('file')}Invitation letter</button><button class="btn gh" data-x="admCopyLink" data-a="${esc(team)}">${I('link')}Copy invite link</button></div><p class="mu" mt10>To change who it goes to, edit the boxes above and click Save team and write email again.</p></div>`;
+<div class="btns"><a class="btn" id="ivGm" target="_blank" rel="noopener" href="${gmail(email,m)}">${I('send')}Open in Gmail</a><a class="btn gh" id="ivMail" href="${mailto(email,m,cc)}">${I('send')}Open in my email app</a><a class="btn gh" href="${smsHref(d.contactPhone||d.leaderPhone,teamSms(d))}">${I('phone')}Text invite${d.contactPhone||d.leaderPhone?' to '+esc((d.contactPhone?d.contact:d.leader)||'them'):''}</a><button class="btn gh" data-x="admCopyMail">Copy email</button><button class="btn gh" data-x="admInvLetter">${I('file')}Invitation letter</button>${d.sig?`<button class="btn gh" data-x="admCopyLetter">${I('link')}Copy letter link</button>`:''}<button class="btn gh" data-x="admCopyLink" data-a="${esc(team)}">${I('link')}Copy invite link</button></div><p class="mu" mt10>To change who it goes to, edit the boxes above and click Save team and write email again.</p></div>`;
 const upd=()=>{const mm={subject:$('#ivs').value,body:$('#ivb').value};$('#ivMail').href=mailto(email,mm,cc);$('#ivGm').href=gmail(email,mm)};$('#ivs').oninput=upd;$('#ivb').oninput=upd}
 const VENDOR_LINK=SITE+'/?vendor';
 const smsHref=(to,body)=>'sms:'+String(to||'').replace(/[^\d+]/g,'')+'?&body='+encodeURIComponent(body);
 const TXT_NOTE='<p class="mu" mt10>Text buttons open your Messages app with the message ready to send. They work best from your phone.</p>';
-const teamSms=d=>{const f=(d.contact||'').trim().split(' ')[0];return`Hi${f?' '+f:''}, this is ${ADM.sender||'the team'} with Fight Wright Foundation. We would love for ${d.team} to build a team for our 5th Annual Pumpkins and Pink Ribbons 5K on Saturday, Oct 24, 10 AM to 2 PM at Perry Harvey Sr. Park in Tampa. Your team leader can register here: ${teamLink(d.team)}`};
+const teamSms=d=>{const f=(d.contact||'').trim().split(' ')[0];return`Hi${f?' '+f:''}, this is ${ADM.sender||'the team'} with Fight Wright Foundation. We would love for ${d.team} to build a team for our 5th Annual Pumpkins and Pink Ribbons 5K on Saturday, Oct 24, 10 AM to 2 PM at Perry Harvey Sr. Park in Tampa. Your team leader can register here: ${teamLink(d.team)}${d.sig?` Our 501(c)(3) volunteer letter: ${letterLink(d.team,d.sig)}`:''}`};
+const letterSms=t=>`Hi${t.contact?' '+t.contact.trim().split(' ')[0]:''}, this is ${ADM.sender||'the team'} with Fight Wright Foundation. Here is our 501(c)(3) volunteer opportunity letter for Team ${t.team}: ${letterLink(t.team,t.sig)} Team members can register here: ${teamLink(t.team)}`;
+const letterMail=t=>({subject:`Fight Wright Foundation 501(c)(3) Volunteer Letter, Team ${t.team}`,body:`Hi ${(t.contact||'').trim().split(' ')[0]||'there'},
+
+Here is our volunteer opportunity letter for Team ${t.team} on Fight Wright Foundation letterhead, including our 501(c)(3) status and EIN. You can open it, download it as a PDF, or forward it:
+${letterLink(t.team,t.sig)}
+
+Team members can register here, which places them on Team ${t.team} automatically:
+${teamLink(t.team)}
+
+Please let us know if you need anything at all.
+
+Best regards,
+${ADM.sender||'[Your name]'}
+Fight Wright Foundation`});
 const leaderSms=(t,l)=>`Hi ${l.name.split(' ')[0]}, thank you for leading Team ${t.team}! Share this link so people join your team automatically: ${teamLink(t.team)} Sign in at ${SITE} with ${l.email} to see your roster. ${ADM.sender||'Fight Wright'}, Fight Wright Foundation`;
 const inviteSms=t=>`Join Team ${t.team} at the Fight Wright Pumpkins and Pink Ribbons 5K on Saturday, Oct 24! Register here: ${teamLink(t.team)}`;
 const vendorSms=()=>`Hi! This is ${ADM.sender||'the team'} with Fight Wright Foundation. Thank you for being a vendor at our Pumpkins and Pink Ribbons 5K on Saturday, Oct 24. Pick your booth and set up your vendor profile here: ${VENDOR_LINK}`;
@@ -574,7 +592,7 @@ function admTeam(t,i){const L=t.members.filter(m=>m.role==='Team Leader'),wv=t.m
 return`<div class="ad-tc"><div class="ad-th"><div><h3>Team ${esc(t.team)}</h3>${t.contact||t.contactEmail?`<p class="mu">Point of contact: ${esc(t.contact)}${t.title?', '+esc(t.title):''}${t.contactEmail?` <a href="mailto:${esc(t.contactEmail)}">${esc(t.contactEmail)}</a>`:''}</p>`:''}${!L.length&&t.leader?`<p class="mu">Planned team leader: ${esc(t.leader)}${t.leaderEmail?` <a href="mailto:${esc(t.leaderEmail)}">${esc(t.leaderEmail)}</a>`:''}</p>`:''}</div>${L.length?`<span class="pl ok">${I('check')} Leader registered</span>`:'<span class="pl">No leader yet</span>'}</div>
 <div class="ad-stats"><div><b>${t.members.length}</b>members</div><div><b>${wv}</b>waivers signed</div><div><b>${Math.round(hr*100)/100}</b>approved hours</div></div>
 ${L.length?`<div class="ad-ld">${L.map((l,j)=>`<div><span class="ic">${I('user')}</span><div style="flex:1;min-width:180px"><b>${esc(l.name)}</b><br><a href="mailto:${esc(l.email)}">${esc(l.email)}</a>${l.phone?` &middot; <a href="tel:${esc(l.phone)}">${esc(l.phone)}</a>`:''}</div><a class="btn sm" href="${mailto(l.email,leaderMail(t,l))}">${I('send')}Email leader</a>${l.phone?`<a class="btn sm gh" href="${smsHref(l.phone,leaderSms(t,l))}">${I('phone')}Text leader</a>`:''}</div>`).join('')}</div>`:''}
-<div class="btns"><button class="btn sm gh" data-x="admCopyLink" data-a="${esc(t.team)}">${I('link')}Copy invite link</button><a class="btn sm gh" href="${smsHref('',inviteSms(t))}">${I('phone')}Text invite link</a><button class="btn sm gh" data-x="admTeamMail" data-a="${i}">${I('send')}${L.length?'Company email':'Invitation email'}</button><button class="btn sm gh" data-x="admRoster" data-a="${i}">${I('users')}${ADM.open[t.team]?'Hide':'Show'} roster</button><button class="btn sm gh" data-x="admLet" data-a="inv:${i}">${I('file')}Invitation letter</button><button class="btn sm gh" data-x="admLet" data-a="hrs:${i}">${I('clock')}Hours letter</button>${t.members.length?`<button class="btn sm gh" data-x="admCsv" data-a="${i}">${I('down')}Roster spreadsheet</button>`:''}</div>
+<div class="btns"><button class="btn sm gh" data-x="admCopyLink" data-a="${esc(t.team)}">${I('link')}Copy invite link</button><a class="btn sm gh" href="${smsHref('',inviteSms(t))}">${I('phone')}Text invite link</a><button class="btn sm gh" data-x="admTeamMail" data-a="${i}">${I('send')}${L.length?'Company email':'Invitation email'}</button><button class="btn sm gh" data-x="admRoster" data-a="${i}">${I('users')}${ADM.open[t.team]?'Hide':'Show'} roster</button><button class="btn sm gh" data-x="admLet" data-a="inv:${i}">${I('file')}Invitation letter</button>${t.sig?`<a class="btn sm gh" href="${mailto(t.contactEmail||'',letterMail(t))}">${I('send')}Email letter</a><a class="btn sm gh" href="${smsHref(t.contactPhone||'',letterSms(t))}">${I('phone')}Text letter</a><button class="btn sm gh" data-x="admLetLink" data-a="${i}">${I('link')}Copy letter link</button>`:''}<button class="btn sm gh" data-x="admLet" data-a="hrs:${i}">${I('clock')}Hours letter</button>${t.members.length?`<button class="btn sm gh" data-x="admCsv" data-a="${i}">${I('down')}Roster spreadsheet</button>`:''}</div>
 ${ADM.open[t.team]?(t.members.length?`<div class="ad-tw"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Waiver</th><th>Hours</th></tr></thead><tbody>${t.members.map(m=>`<tr><td>${esc(m.name)}</td><td><a href="mailto:${esc(m.email)}">${esc(m.email)}</a></td><td>${esc(m.phone)}</td><td>${esc(m.role)}</td><td>${m.waiver?'Signed':'Needed'}</td><td>${m.hours}</td></tr>`).join('')}</tbody></table></div>`:'<p class="mu" mt10>No one has joined yet.</p>'):''}</div>`}
 Object.assign(X,{
 admRefresh:()=>{$('#login').querySelector('.ad-tg').innerHTML='<p class="mu">Refreshing...</p>';admLoad().then(admRender).catch(()=>toast('Could not refresh'))},
@@ -592,6 +610,8 @@ admStaffActive:async(t,a)=>{const p=ADM.staff[+a];if(!p)return;try{await admApi(
 admCopyLink:(t,a)=>copyTxt(teamLink(a),'Invite link copied'),
 admCopyMail:()=>copyTxt('Subject: '+$('#ivs').value+'\n\n'+$('#ivb').value,'Email copied'),
 admInvLetter:()=>admLetter('inv',ADM.cur.t),
+admCopyLetter:()=>copyTxt(letterLink(ADM.cur.t.team,ADM.cur.t.sig),'Letter link copied'),
+admLetLink:(t,a)=>{const tm=ADM.teams[+a];copyTxt(letterLink(tm.team,tm.sig),'Letter link copied')},
 admTeamMail:(t,a)=>{admCompose(ADM.teams[+a].team);$('#ivOut').scrollIntoView({behavior:'smooth',block:'start'})},
 admRoster:(t,a)=>{const tm=ADM.teams[+a];ADM.open[tm.team]=!ADM.open[tm.team];admRender()},
 admLet:(t,a)=>{const[k,i]=a.split(':');admLetter(k,ADM.teams[+i])},
@@ -637,7 +657,12 @@ fm.innerHTML=`<h2>Create your password</h2><p class="mu">Welcome${info.name?', '
 fm.onsubmit=async e=>{e.preventDefault();const a=$('#np1').value,b=$('#np2').value,er=m=>{$('#nperr').textContent=m;$('#nperr').hidden=false};$('#nperr').hidden=true;if(a.length<8)return er('Use at least 8 characters.');if(a!==b)return er('The two passwords do not match.');$('#npb').disabled=true;
 try{const d=await staffAuth({action:'staffSetup',code,password:a});history.replaceState(null,'','/');await admStart(d);toast('Password saved. You are signed in.')}catch(err){er(err.message);$('#npb').disabled=false}}}
 
+async function letterPage(team,k){$('#app').hidden=true;$('#login').hidden=false;$('#login').innerHTML='<p class="mu" style="padding:32px;text-align:center">Loading your letter...</p>';
+try{const r=await fetch(RELAY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'letter',team,k})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'');
+const h=letterDoc('inv',d,true);document.open();document.write(h);document.close()}
+catch(err){$('#login').innerHTML=`<div style="padding:32px 20px;max-width:520px;margin:0 auto;text-align:center"><p>${esc(err.message||'This letter could not be loaded. Please try again in a minute.')}</p><p mt14><a class="btn" href="/">Go to the Fight Wright portal</a></p></div>`}}
 function route(fromPop){const q=new URLSearchParams(location.search),pth=location.pathname;
+if(q.get('letter')){letterPage(q.get('letter'),q.get('k')||'');return}
 if(/^\/admin\/?$/.test(pth))adminPage();
 else if(/^\/team\/?$/.test(pth))profilePage(true);
 else if(/^\/vendors?\/?$/.test(pth)||q.has('vendor'))vendorPage();
