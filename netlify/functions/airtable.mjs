@@ -109,6 +109,8 @@ async function hmac(s) {
 const b64 = s => btoa(unescape(encodeURIComponent(s))).replace(/=+$/, '').replace(/\+/g, '-').replace(/\//g, '_');
 const unb64 = s => decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))));
 async function makeToken(email) { const p = b64(JSON.stringify({ e: email, x: Date.now() + 30 * 864e5 })); return p + '.' + await hmac(p); }
+// Letter links: each team's 501(c)(3) letter has a private link signed with the server secret.
+const letterSig = async team => (await hmac('letter:' + String(team || '').trim().toLowerCase())).slice(0, 24);
 async function readToken(t) {
   const [p, sig] = String(t || '').split('.');
   if (!p || !sig || !same(await hmac(p), sig)) return null;
@@ -234,6 +236,7 @@ async function admin(body) {
   vols.forEach(v => get(v.Team).members.push({ name: v['Full Name'], email: v.Email || '', phone: v.Phone || '', role: v.Role || '', waiver: !!v['Liability Waiver Signed'], hours: num(v['Total Approved Hours']), joined: v.Joined || '' }));
   const list2 = [...map.values()].map(g => ({ ...g, members: g.members.sort((a, b) => (b.role === 'Team Leader') - (a.role === 'Team Leader') || a.name.localeCompare(b.name)) }))
     .sort((a, b) => a.team.localeCompare(b.team));
+  await Promise.all(list2.map(async g => { g.sig = await letterSig(g.team); }));
   return { status: 200, data: { teams: list2 } };
 }
 
@@ -339,6 +342,26 @@ export default async (request) => {
       });
     }
     return json({ ok: true, booth });
+  }
+
+  // Public 501(c)(3) letter link: returns only what is printed on the letter.
+  if (body.action === 'letter') {
+    const team = String(body.team || '').trim().slice(0, 40), k = String(body.k || '');
+    const bad = { error: 'This letter link is not valid. Please ask Fight Wright Foundation for a new one.' };
+    if (!team || !k || !same(await letterSig(team), k)) return json(bad, 403);
+    const q = team.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    try {
+      const [rows, leads] = await Promise.all([
+        list('Teams', { fields: ['Team Name', 'Company Contact', 'Contact Title', 'Contact Email', 'Planned Leader', 'Planned Leader Email'], filter: `LOWER({Team Name})=LOWER("${q}")`, max: 1 }),
+        list('Volunteers', { fields: ['Full Name', 'Email'], filter: `AND(LOWER({Team})=LOWER("${q}"),{Role}="Team Leader",{Full Name}!="")`, max: 1 })
+      ]);
+      const t = rows[0], l = leads[0];
+      if (!t) return json(bad, 404);
+      return json({
+        team: t['Team Name'], company: t['Team Name'], contact: t['Company Contact'] || '', title: t['Contact Title'] || '', contactEmail: t['Contact Email'] || '',
+        leader: l ? l['Full Name'] : (t['Planned Leader'] || ''), leaderEmail: l ? (l.Email || '') : (t['Planned Leader Email'] || '')
+      });
+    } catch (e) { return json({ error: 'Could not load the letter. Try again in a minute.' }, 502); }
   }
 
   // Welcome Back: find a registration by email so returning people skip re-entering details.
