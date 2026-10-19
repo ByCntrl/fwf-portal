@@ -4,18 +4,18 @@
 
 [[redirects]]
   from = "/"
-  to = "/index_24.html"
+  to = "/portal-v9.html"
   status = 200
   force = true
 
 [[redirects]]
   from = "/admin"
-  to = "/index_24.html"
+  to = "/portal-v9.html"
   status = 200
 
 [[redirects]]
   from = "/team"
-  to = "/index_24.html"
+  to = "/portal-v9.html"
   status = 200
 
 [[headers]]
