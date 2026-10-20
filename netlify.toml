@@ -4,18 +4,18 @@
 
 [[redirects]]
   from = "/"
-  to = "/portal-v9.html"
+  to = "/portal-v10.html"
   status = 200
   force = true
 
 [[redirects]]
   from = "/admin"
-  to = "/portal-v9.html"
+  to = "/portal-v10.html"
   status = 200
 
 [[redirects]]
   from = "/team"
-  to = "/portal-v9.html"
+  to = "/portal-v10.html"
   status = 200
 
 [[headers]]
