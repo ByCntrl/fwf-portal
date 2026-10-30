@@ -4,35 +4,41 @@
 
 [[redirects]]
   from = "/"
-  to = "/portal-v16.html"
+  to = "/portal-v17.html"
   status = 200
   force = true
 
 [[redirects]]
   from = "/admin"
-  to = "/portal-v16.html"
+  to = "/portal-v17.html"
   status = 200
 
 [[redirects]]
   from = "/team"
-  to = "/portal-v16.html"
+  to = "/portal-v17.html"
   status = 200
 
 [[redirects]]
   from = "/sistercircle"
-  to = "/circle-v2.html"
+  to = "/circle-v3.html"
   status = 200
   force = true
 
 [[redirects]]
   from = "/programs"
-  to = "/circle-v2.html"
+  to = "/circle-v3.html"
   status = 200
   force = true
 
 [[redirects]]
   from = "/circle-v1.html"
-  to = "/circle-v2.html"
+  to = "/circle-v3.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/circle-v2.html"
+  to = "/circle-v3.html"
   status = 200
   force = true
 
