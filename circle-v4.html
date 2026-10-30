@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sister Circle | Fight Wright Foundation</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2A0A1C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--pk:#E8006F;--pkd:#B8005A;--pkl:#FDE8F2;--bl:#FBEFF4;--plum:#2A0A1C;--plum2:#3D1229;--ink:#221019;--mut:#76606B;--ln:#EEE0E7;--bg:#FFF9FB;--card:#fff;--ok:#13784F;--okl:#E3F4EC;--warn:#9A5B00;--warnl:#FFF2DC;--bad:#B42318;--badl:#FDECEA;--serif:"Fraunces",Georgia,serif;--sans:"Inter",system-ui,-apple-system,sans-serif;--sb:env(safe-area-inset-bottom,0px)}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:15.5px;line-height:1.5;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--pkd)}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+.mu{color:var(--mut)}.sm{font-size:13.5px}.b{font-weight:600}
+h1,h2,h3{font-family:var(--serif);font-weight:700;line-height:1.15;letter-spacing:-.01em}
+h1{font-size:clamp(30px,6vw,46px)}h2{font-size:24px}h3{font-size:19px}
+.kick{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--pk)}
+/* buttons and inputs */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;background:var(--pk);color:#fff;font-weight:600;padding:12px 20px;min-height:46px;cursor:pointer;text-decoration:none;transition:background .15s,transform .1s}
+.btn:hover{background:var(--pkd)}.btn:active{transform:scale(.98)}.btn:disabled{opacity:.55;cursor:default}
+.btn.gh{background:transparent;color:var(--pkd);border:1.5px solid #F2C3D9}.btn.gh:hover{background:var(--pkl)}
+.btn.dk{background:var(--plum)}.btn.dk:hover{background:var(--plum2)}
+.btn.sm{min-height:36px;padding:7px 14px;font-size:14px}.btn.xs{min-height:30px;padding:4px 11px;font-size:13px}
+.btn.wide{width:100%}
+.btn.ok{background:var(--ok)}.btn.red{background:transparent;color:var(--bad);border:1.5px solid #F3C4BF}
+.lk{background:none;border:0;color:var(--pkd);font-weight:600;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+label.f{display:block;margin-bottom:14px}label.f>span{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
+label.f small{display:block;color:var(--mut);font-size:12.5px;margin-top:4px}
+.in{width:100%;border:1.5px solid var(--ln);border-radius:12px;padding:11px 13px;background:#fff;min-height:46px;outline:none;transition:border .15s}
+.in:focus{border-color:var(--pk);box-shadow:0 0 0 3px rgba(232,0,111,.12)}
+textarea.in{min-height:96px;resize:vertical}
+.chk{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;cursor:pointer;font-size:14.5px}.chk input{width:20px;height:20px;accent-color:var(--pk);flex:none;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--ln);background:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:500;font-size:14px}
+.chip[aria-pressed=true]{border-color:var(--pk);background:var(--pkl);color:var(--pkd);font-weight:600}
+.err{background:var(--badl);color:var(--bad);border-radius:12px;padding:10px 14px;font-size:14px;margin-bottom:14px}
+.note{background:var(--bl);border-radius:12px;padding:12px 14px;font-size:14px;margin-bottom:14px}
+/* cards */
+.card{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:20px;margin-bottom:16px}
+.ch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;background:var(--pkl);color:var(--pkd);white-space:nowrap}
+.pill.ok{background:var(--okl);color:var(--ok)}.pill.warn{background:var(--warnl);color:var(--warn)}.pill.bad{background:var(--badl);color:var(--bad)}.pill.gr{background:#F1ECEF;color:var(--mut)}
+.av{width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--pkl);color:var(--pkd);display:inline-flex;align-items:center;justify-content:center;font-weight:700;flex:none;font-size:15px}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g2,.g3{grid-template-columns:1fr}.g4{grid-template-columns:1fr 1fr}}
+.empty{text-align:center;padding:26px 10px;color:var(--mut)}
+.empty .i{width:30px;height:30px;color:#E6B3CB;margin-bottom:6px}
+/* welcome / auth */
+.auth{min-height:100vh;display:grid;grid-template-columns:1.05fr 1fr}
+.auth .art{background:radial-gradient(circle at 20% 15%,rgba(232,0,111,.55),transparent 55%),radial-gradient(circle at 85% 90%,rgba(255,171,206,.35),transparent 50%),var(--plum);color:#fff;padding:40px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.auth .art h1{font-size:clamp(40px,6vw,64px);margin:18px 0 14px}
+.auth .art h1 em{font-style:italic;color:#FFB3D4;font-weight:500}
+.auth .art p{color:#F7D7E6;max-width:42ch;font-size:16.5px}
+.ring{position:absolute;border:1.5px solid rgba(255,179,212,.25);border-radius:50%}
+.wm{height:46px;width:auto;display:block}
+.auth .art .wm{filter:brightness(0) invert(1);opacity:.95}
+.auth .form{padding:40px;display:flex;align-items:center;justify-content:center}
+.auth .box{width:100%;max-width:420px}
+.tabs{display:flex;gap:6px;background:#F5EBF0;border-radius:999px;padding:4px;margin-bottom:22px}
+.tabs button{flex:1;border:0;background:none;border-radius:999px;padding:10px;font-weight:600;cursor:pointer;color:var(--mut)}
+.tabs button[aria-selected=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(34,16,25,.12)}
+.meet{display:flex;gap:12px;align-items:center;margin-top:28px;color:#F7D7E6;font-size:14px}
+.meet .i{color:#FFB3D4}
+@media(max-width:860px){.auth{grid-template-columns:1fr}.auth .art{padding:28px 20px 34px;min-height:auto}.auth .art h1{font-size:40px}.auth .form{padding:24px 16px 40px}}
+/* member app */
+.top{position:sticky;top:0;z-index:20;background:rgba(255,249,251,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--ln)}
+.top .wrap{display:flex;align-items:center;gap:12px;height:62px}
+.top .wm{height:34px}
+.top .ttl{font-family:var(--serif);font-weight:700;font-size:18px;margin-right:auto;white-space:nowrap}
+.top .ttl span{color:var(--pk)}
+.nav{display:flex;gap:4px}
+.nav button{white-space:nowrap;border:0;background:none;padding:9px 13px;border-radius:999px;font-weight:600;color:var(--mut);cursor:pointer;display:flex;gap:7px;align-items:center;font-size:14.5px}
+.nav button[aria-current=page]{background:var(--pkl);color:var(--pkd)}
+.top .btn{white-space:nowrap}@media(max-width:1180px){.adm .nav button .i{display:none}.adm .nav button{padding:9px 10px}}
+.avbtn{border:0;background:none;cursor:pointer;padding:0;border-radius:50%}
+.bnav{display:none}
+@media(max-width:820px){.top .nav{display:none}.top .ttl{font-size:17px}
+.bnav{display:grid;position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--ln);padding:6px 4px calc(6px + var(--sb));grid-auto-flow:column;grid-auto-columns:1fr}
+.bnav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;font-weight:600;color:var(--mut);padding:6px 0;cursor:pointer}
+.bnav button[aria-current=page]{color:var(--pk)}
+main.app{padding-bottom:calc(90px + var(--sb))}}
+.hero{background:radial-gradient(circle at 90% 0%,rgba(232,0,111,.45),transparent 50%),var(--plum);color:#fff;border-radius:26px;padding:30px 28px;margin:20px 0 18px;position:relative;overflow:hidden}
+.hero h1 em{font-style:italic;font-weight:500;color:#FFB3D4}
+.hero p{color:#F7D7E6;margin-top:8px;max-width:52ch}
+.hero .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.hero .btn.gh{color:#fff;border-color:rgba(255,255,255,.4)}.hero .btn.gh:hover{background:rgba(255,255,255,.08)}
+.next{display:grid;grid-template-columns:118px 1fr;gap:20px;align-items:start}
+.dt{background:var(--pkl);border-radius:18px;text-align:center;padding:14px 8px;color:var(--pkd)}
+.dt b{display:block;font-family:var(--serif);font-size:44px;line-height:1;color:var(--pk)}
+.dt span{display:block;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.dt small{display:block;font-size:12.5px;margin-top:4px}
+@media(max-width:520px){.next{grid-template-columns:1fr}.dt{display:flex;align-items:baseline;gap:10px;justify-content:center}.dt b{font-size:34px}}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin:10px 0 14px;color:var(--mut);font-size:14px}
+.meta span{display:flex;gap:6px;align-items:center}
+.post{display:flex;gap:12px;padding:16px 0;border-top:1px solid var(--ln)}.post:first-child{border-top:0;padding-top:4px}
+.post .bd{flex:1;min-width:0}
+.post .nm{font-weight:700}.post .tx{white-space:pre-wrap;overflow-wrap:anywhere;margin-top:4px}
+.post .pic{margin-top:10px;border-radius:14px;max-width:100%;max-height:360px;object-fit:cover}
+.post .ft{display:flex;gap:14px;align-items:center;margin-top:8px;font-size:13px;color:var(--mut)}
+.cheer{border:0;background:none;display:inline-flex;gap:5px;align-items:center;cursor:pointer;color:var(--mut);font-weight:600;font-size:13px;padding:4px 0}
+.cheer[aria-pressed=true]{color:var(--pk)}.cheer[aria-pressed=true] .i{fill:var(--pk)}
+.upd{border-left:4px solid var(--pk);background:var(--bl);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.upd h4{font-family:var(--serif);font-size:17px;margin-bottom:4px}
+.upd .tx{white-space:pre-wrap}
+.spot{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center}
+.spot img{width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid var(--pkl)}
+@media(max-width:520px){.spot{grid-template-columns:1fr;text-align:center}.spot img{margin:0 auto}}
+.res{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-top:1px solid var(--ln);text-decoration:none;color:inherit}.res:first-child{border-top:0}
+.res .ic{width:40px;height:40px;border-radius:12px;background:var(--pkl);color:var(--pk);display:flex;align-items:center;justify-content:center;flex:none}
+.mrow .ic{width:40px;height:40px;border-radius:12px;background:var(--pkl);color:var(--pk);display:flex;align-items:center;justify-content:center;flex:none}
+.compose{display:flex;gap:12px;align-items:flex-start}
+.compose .in{min-height:76px}
+.corner-h{background:linear-gradient(135deg,#3D1229,#6B1442);color:#fff;border-radius:22px;padding:22px;margin:20px 0 16px}
+.corner-h p{color:#F7D7E6}
+/* admin */
+.top.dark,.adm .top{background:var(--plum);border-color:var(--plum)}.top.dark .ttl,.adm .top .ttl{color:#fff}.top.dark .ttl span{color:#FFB3D4}.top.dark .wm,.adm .top .wm{filter:brightness(0) invert(1)}
+.top.dark .nav button,.adm .top .nav button{color:#E9C9D9}.top.dark .nav button[aria-current=page],.adm .top .nav button[aria-current=page]{background:rgba(255,255,255,.12);color:#fff}
+.sub{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 16px}
+.sub button{border:1.5px solid var(--ln);background:#fff;border-radius:999px;padding:8px 14px;font-weight:600;cursor:pointer;font-size:14px;display:flex;gap:6px;align-items:center}
+.sub button[aria-current=page]{background:var(--plum);border-color:var(--plum);color:#fff}
+.cnt{background:var(--pk);color:#fff;border-radius:999px;font-size:11px;padding:1px 7px;font-weight:700}
+.stat{background:#fff;border:1px solid var(--ln);border-radius:18px;padding:16px}
+.stat b{display:block;font-family:var(--serif);font-size:30px;line-height:1.1;margin-top:4px}
+.stat span{font-size:13px;color:var(--mut);font-weight:600}
+.stat.pk{background:var(--plum);color:#fff;border-color:var(--plum)}.stat.pk span{color:#F2C3D9}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);padding:8px 10px;border-bottom:1.5px solid var(--ln);white-space:nowrap}
+.tbl td{padding:11px 10px;border-bottom:1px solid var(--ln);vertical-align:top}
+.tbl tr.click{cursor:pointer}.tbl tr.click:hover td{background:#FFF5F9}
+.tscroll{overflow-x:auto;margin:0 -20px;padding:0 20px}
+@media(max-width:700px){.tbl.stack thead{display:none}.tbl.stack tr{display:block;border:1px solid var(--ln);border-radius:14px;margin-bottom:10px;padding:6px 4px}.tbl.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:6px 10px}.tbl.stack td::before{content:attr(data-l);font-weight:600;color:var(--mut);font-size:12.5px;flex:none}.tscroll{margin:0;padding:0}}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.toolbar .in{width:auto;flex:1;min-width:160px;min-height:40px;padding:8px 12px}
+.toolbar select.in{flex:none}
+.mrow{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--ln);flex-wrap:wrap}.mrow:first-child{border-top:0}
+.mrow .bd{flex:1;min-width:180px}
+.bar{height:8px;border-radius:99px;background:#F3E3EB;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--pk);border-radius:99px}
+.spc{border:1px solid var(--ln);border-radius:18px;padding:16px;background:#fff;margin-bottom:12px}
+.spc .hd{display:flex;gap:12px;align-items:center}
+.spc .logo{width:48px;height:48px;border-radius:12px;object-fit:contain;background:#FAF5F7;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--pkd)}
+.ben{display:flex;gap:8px;align-items:center;font-size:14px;padding:4px 0;cursor:pointer}.ben input{accent-color:var(--ok);width:18px;height:18px}
+.ben.done span{text-decoration:line-through;color:var(--mut)}
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(34,16,25,.5);z-index:50;display:flex;align-items:flex-end;justify-content:center;padding:16px}
+@media(min-width:700px){.ov{align-items:center}}
+.md{background:#fff;border-radius:24px;width:100%;max-width:560px;max-height:calc(100vh - 32px);overflow:auto;padding:22px}
+.md.wide{max-width:880px}
+.md .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px}
+.x{border:0;background:#F5EBF0;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}@media(max-width:520px){.frow{grid-template-columns:1fr}}
+.mbtns{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-top:8px}
+.toast{position:fixed;left:50%;bottom:calc(90px + var(--sb));transform:translateX(-50%);background:var(--plum);color:#fff;padding:12px 18px;border-radius:999px;font-weight:600;z-index:60;box-shadow:0 8px 24px rgba(0,0,0,.2);font-size:14px;max-width:calc(100% - 32px);text-align:center}
+.map{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;align-items:center;font-size:14px}
+.map select{min-height:38px;padding:6px 10px}
+.prev{font-size:13px}.prev td,.prev th{padding:6px 8px}
+.flag{color:var(--warn);font-weight:600}
+.load{display:flex;align-items:center;justify-content:center;min-height:60vh;color:var(--mut)}
+.spin{width:28px;height:28px;border:3px solid var(--pkl);border-top-color:var(--pk);border-radius:50%;animation:sp .8s linear infinite;margin-right:10px}@keyframes sp{to{transform:rotate(360deg)}}
+.foot{text-align:center;color:var(--mut);font-size:12.5px;padding:30px 16px 40px}
+.lowst td:first-child{color:var(--bad);font-weight:600}
+.copy{display:flex;gap:8px}.copy .in{font-size:13px}
+.pipe{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}@media(max-width:820px){.pipe{grid-template-columns:1fr}}
+.pcol{background:#F8EEF3;border-radius:18px;padding:12px}.pcol h4{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin:2px 4px 10px;display:flex;justify-content:space-between}
+.pcard{background:#fff;border:1px solid var(--ln);border-radius:14px;padding:12px;margin-bottom:10px}
+.due{color:var(--bad);font-weight:600}
+.letter{background:#fff;border:1px solid var(--ln);border-radius:12px;padding:28px;font-family:Georgia,serif;font-size:15px;line-height:1.6;color:#222}
+.letter .lh{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:2px solid var(--pk);padding-bottom:12px;margin-bottom:18px}
+.letter .lh img{height:54px;filter:none}.letter .org{text-align:right;font-family:Inter,sans-serif;font-size:11.5px;color:#555;line-height:1.5}.letter .org b{color:#222;font-size:12.5px}
+.letter p{margin:0 0 12px;white-space:pre-wrap}.letter .lf{border-top:1px solid #ddd;margin-top:18px;padding-top:8px;font-family:Inter,sans-serif;font-size:11px;color:#666;text-align:center}
+.rep{background:#fff;border:1px solid var(--ln);border-radius:20px;padding:26px}
+.rep .rh{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:2px solid var(--pk);padding-bottom:14px;margin-bottom:18px;flex-wrap:wrap}
+.rep .rh img{height:48px}
+.rep h4{font-family:var(--serif);font-size:18px;margin:18px 0 10px}
+.big{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}@media(max-width:700px){.big{grid-template-columns:1fr 1fr}}
+.big div{background:var(--bl);border-radius:14px;padding:14px}.big b{display:block;font-family:var(--serif);font-size:28px;color:var(--pkd)}.big span{font-size:12.5px;color:var(--mut);font-weight:600}
+.isheet{border:1px solid var(--ln);border-radius:16px;padding:16px;margin-bottom:14px}
+.isheet .ih{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.drop{border:2px dashed #F2C3D9;border-radius:18px;padding:26px;text-align:center;background:var(--bl)}
+@media print{body *{visibility:hidden}#printme,#printme *{visibility:visible}#printme{position:absolute;left:0;top:0;width:100%;border:0!important}.noprint{display:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="home"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol><symbol id="clock"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol><symbol id="cal"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol><symbol id="qr"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></symbol><symbol id="share"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></symbol><symbol id="bell"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/></symbol><symbol id="users"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1M16 3.1a4 4 0 0 1 0 7.8M22 21v-1a6 6 0 0 0-4-5.6"/></symbol><symbol id="chat"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></symbol><symbol id="trophy"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></symbol><symbol id="heart"><path d="M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z"/></symbol><symbol id="mega"><path d="M3 11v2a1 1 0 0 0 1 1h3l6 5V5L7 10H4a1 1 0 0 0-1 1zM17 8a5 5 0 0 1 0 8"/></symbol><symbol id="img"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></symbol><symbol id="up"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></symbol><symbol id="down"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></symbol><symbol id="bag"><path d="M5 7h14l-1 14H6zM9 7a3 3 0 0 1 6 0"/></symbol><symbol id="user"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol><symbol id="map"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/></symbol><symbol id="nav"><path d="M3 11l19-9-9 19-2-8z"/></symbol><symbol id="gift"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13M12 8S10 3 7.5 4.5 9 8 12 8zm0 0s2-5 4.5-3.5S15 8 12 8"/></symbol><symbol id="check"><path d="M5 12l5 5L20 7"/></symbol><symbol id="x"><path d="M6 6l12 12M18 6L6 18"/></symbol><symbol id="back"><path d="M15 18l-6-6 6-6"/></symbol><symbol id="phone"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></symbol><symbol id="send"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></symbol><symbol id="star"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3l-5.5 2.9 1-6.2L3 9.6l6.2-.9z"/></symbol><symbol id="rib"><path d="M9.2 10.4a3.6 3.6 0 1 1 5.6 0L9 21M9.2 10.4L15 21"/></symbol><symbol id="cam"><path d="M3 8a2 2 0 0 1 2-2h2l2-2h6l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="4"/></symbol><symbol id="out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol><symbol id="file"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M9 13h6M9 17h6"/></symbol><symbol id="lock"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol><symbol id="link"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol><symbol id="plus"><path d="M12 5v14M5 12h14"/></symbol><symbol id="search"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol><symbol id="face"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M9 10h.01M15 10h.01M9.5 15a3.5 3.5 0 0 0 5 0"/></symbol><symbol id="book"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2zM4 21V5"/></symbol><symbol id="bolt"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol><symbol id="music"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></symbol><symbol id="truck"><path d="M2 6h12v10H2zM14 10h4l3 3v3h-7"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></symbol><symbol id="castle"><path d="M3 21V9h3v3h3V9h6v3h3V9h3v12zM10 21v-4a2 2 0 0 1 4 0v4M6 9V5M18 9V5M6 5l2 1-2 1"/></symbol><symbol id="pin"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></symbol><symbol id="flag"><path d="M5 21V4h11l-2 4 2 4H5"/></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="edit"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/></symbol>
+<symbol id="trash"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+<symbol id="dollar"><path d="M12 3v18M16.5 7.5C16 6 14.3 5 12 5c-2.8 0-4.5 1.4-4.5 3.2 0 4.3 9 2.5 9 7 0 1.9-1.8 3.3-4.5 3.3-2.5 0-4.3-1.1-4.8-2.8"/></symbol>
+<symbol id="upload"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></symbol>
+<symbol id="spark"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></symbol>
+<symbol id="copy"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
+<symbol id="box"><path d="M3 7l9-4 9 4-9 4zM3 7v10l9 4 9-4V7M12 11v10"/></symbol>
+<symbol id="pause"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+</svg>
+<div id="app"><div class="load"><div class="spin"></div>Loading Sister Circle</div></div>
+<div id="ov"></div>
+<script>
+'use strict';
+const API='/api/fwfp2';
+const LOGO='data:image/png;base64,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';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const I=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#${n}"/></svg>`;
+const logo=()=>`<img class="wm" src="${LOGO}" alt="Fight Wright Foundation">`;
+const ini=n=>String(n||'?').split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const av=(photo,name,size)=>photo?`<img class="av" src="${esc(photo)}" alt="" style="${size?`width:${size}px;height:${size}px`:''}">`:`<span class="av" style="${size?`width:${size}px;height:${size}px;font-size:${Math.round(size/2.6)}px`:''}">${esc(ini(name))}</span>`;
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
+const TZ='America/New_York';
+const fmt=(d,o)=>d?new Date(d).toLocaleString('en-US',{timeZone:TZ,...o}):'';
+const fDate=d=>fmt(d,{weekday:'long',month:'long',day:'numeric'});
+const fShort=d=>d?(String(d).length===10?new Date(d+'T12:00:00'):new Date(d)).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
+const fTime=d=>fmt(d,{hour:'numeric',minute:'2-digit'});
+const ago=d=>{const s=(Date.now()-new Date(d))/1e3;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';if(s<604800)return Math.floor(s/86400)+'d ago';return fShort(d)};
+const recv=s=>s['Amount Received']!=null&&s['Amount Received']!==''?+s['Amount Received']||0:(['Paid','In-kind'].includes(s['Payment Status'])?+s.Commitment||0:0);
+const ORG={legal:'Fight Wright Foundation, Inc.',addr1:'1431 S Kingsway Rd, P.O. Box 372',addr2:'Seffner, FL 33584',phone:'(813) 215-7081',email:'events@fightwrightfoundation.org',web:'fightwrightfoundation.org',ein:'92-0584097',signer:'Dr. Vondalyn Wright',title:'Founder and CEO'};
+const committed=s=>!s.Stage||s.Stage==='Committed';
+const todayISO=()=>new Date().toLocaleDateString('en-CA');
+const money=n=>'$'+Math.round(Number(n)||0).toLocaleString('en-US');
+function thirdThursday(y,m){const d=new Date(y,m,1);return new Date(y,m,1+((4-d.getDay()+7)%7)+14)}
+function nextThirdThursday(){const n=new Date();let t=thirdThursday(n.getFullYear(),n.getMonth());if(t.setHours(23,59)<n)t=thirdThursday(n.getFullYear(),n.getMonth()+1);return t}
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+async function call(body){
+  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  let d={};try{d=await r.json()}catch(e){}
+  if(!r.ok){const e=new Error(d.error||'Something went wrong. Please try again.');e.status=r.status;e.data=d;throw e}
+  return d;
+}
+function busy(btn,on,label){if(!btn)return;if(on){btn.dataset.l=btn.innerHTML;btn.disabled=true;btn.innerHTML=label||'Saving...'}else{btn.disabled=false;if(btn.dataset.l)btn.innerHTML=btn.dataset.l}}
+function showErr(form,msg){let e=$('.err',form);if(!msg){e&&e.remove();return}if(!e){e=document.createElement('div');e.className='err';e.setAttribute('role','alert');form.prepend(e)}e.textContent=msg;e.scrollIntoView({block:'nearest'})}
+function readPhoto(file){return new Promise((ok,no)=>{if(!file)return ok(null);const img=new Image(),u=URL.createObjectURL(file);img.onload=()=>{const max=1200,s=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);ok({contentType:'image/jpeg',filename:'photo.jpg',file:c.toDataURL('image/jpeg',.85).split(',')[1]})};img.onerror=()=>no(new Error('That photo could not be read. Try a JPG or PNG.'));img.src=u})}
+function modal(html,wide){const o=$('#ov');o.innerHTML=`<div class="ov" role="dialog" aria-modal="true"><div class="md ${wide?'wide':''}">${html}</div></div>`;const ov=$('.ov',o);ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest('[data-close]'))closeModal()});document.addEventListener('keydown',escClose);const f=$('input,textarea,select,button:not(.x)',ov);f&&setTimeout(()=>f.focus(),50);return $('.md',o)}
+function escClose(e){if(e.key==='Escape')closeModal()}
+function closeModal(){$('#ov').innerHTML='';document.removeEventListener('keydown',escClose)}
+const xbtn=`<button class="x" data-close aria-label="Close">${I('x')}</button>`;
+
+/* =================== ROUTER =================== */
+function route(){
+  const h=location.hash.slice(1);
+  if(h.startsWith('reset='))return resetView(h.slice(6));
+  if(h.startsWith('admin-setup='))return adminSetupView(h.slice(12));
+  if(h.startsWith('admin')||/^\/programs/i.test(location.pathname))return Admin.start();
+  return Member.start();
+}
+window.addEventListener('hashchange',()=>{closeModal();route()});
+
+/* =================== MEMBER SIDE =================== */
+const TYPES=[['Survivor','Survivor'],['In Treatment','In treatment'],['Caregiver','Caregiver'],['Family','Family member'],['Supporter','Supporter']];
+const GUIDE=['What is shared in the circle stays in the circle.','Lead with kindness. Everyone is at a different place in their journey.','No medical advice. Share experiences, and talk to your care team about treatment.','No selling or promotions.','Yolanda may remove posts that do not keep the circle safe.'];
+const Member={
+  token:store.get('fwf_circle'),data:null,tab:'home',
+  async start(){
+    if(!this.token&&mainTok())return Admin.start();
+    if(!this.token)return this.authView('in');
+    try{this.data=await call({action:'me',token:this.token});this.render()}
+    catch(e){if(e.status===401){this.token=null;store.set('fwf_circle',null)}this.authView('in',e.status===401?'':e.message)}
+  },
+  authView(mode,msg){
+    document.body.className='';
+    const nt=nextThirdThursday();
+    $('#app').innerHTML=`<div class="auth"><section class="art">
+      <div style="position:relative;z-index:1">${logo()}<h1>Sister <em>Circle</em></h1><p>A circle of survivors, caregivers, family and friends who show up for each other every month, and every day in between.</p>
+      <div class="meet">${I('cal')}<span>Next gathering: <b style="color:#fff">Coming soon</b></span></div></div>
+      <p class="sm" style="position:relative;z-index:1;margin-top:28px;opacity:.8">A Fight Wright Foundation community</p>
+      <span class="ring" style="width:420px;height:420px;right:-140px;top:-120px"></span><span class="ring" style="width:260px;height:260px;right:-40px;bottom:-90px"></span>
+    </section><section class="form"><div class="box" id="authbox"></div></section></div>`;
+    this.authForm(mode,msg);
+  },
+  authForm(mode,msg){
+    const box=$('#authbox');
+    box.innerHTML=`<div class="tabs" role="tablist"><button role="tab" aria-selected="${mode==='in'}" data-m="in">Sign in</button><button role="tab" aria-selected="${mode==='join'}" data-m="join">Join the circle</button></div><div id="authf"></div>`;
+    $$('[data-m]',box).forEach(b=>b.onclick=()=>this.authForm(b.dataset.m));
+    const f=$('#authf');
+    if(mode==='in'){
+      f.innerHTML=`<form id="fin" novalidate><h2 style="margin-bottom:6px">Welcome back, sis.</h2><p class="mu" style="margin-bottom:20px">Sign in to see what is happening in the circle.</p>
+      <label class="f"><span>Email</span><input class="in" name="email" type="email" autocomplete="email" required></label>
+      <label class="f"><span>Password</span><input class="in" name="password" type="password" autocomplete="current-password" required></label>
+      <button class="btn wide" type="submit">Sign in</button>
+      <p class="sm mu" style="margin-top:16px">Fight Wright staff: sign in here with your staff email and password.</p><p class="sm mu" style="margin-top:6px">Forgot your password? Ask Yolanda for a reset link and you will be back in within a minute.</p></form>`;
+      const form=$('#fin');if(msg)showErr(form,msg);
+      form.onsubmit=async e=>{e.preventDefault();showErr(form);const d=Object.fromEntries(new FormData(form)),b=$('button[type=submit]',form);busy(b,1,'Signing in...');
+        try{const r=await call({action:'login',...d});if(r.staff){store.set('fwf_padmin',r.token);if(r.main){store.set('fwf-admin-tok',JSON.stringify(r.main));store.set('fwf-admin-name',JSON.stringify(r.name||''));store.set('fwf-admin-email',JSON.stringify(r.email||''))}Admin.token=r.token;Admin.tab='circle';return Admin.start()}this.token=r.token;store.set('fwf_circle',r.token);this.tab='home';await this.start()}
+        catch(err){busy(b,0);if(err.data&&err.data.pending)return this.pendingView(err.data.name);showErr(form,err.message)}};
+    }else{
+      f.innerHTML=`<form id="fjoin" novalidate><h2 style="margin-bottom:6px">Join the circle</h2><p class="mu" style="margin-bottom:18px">Yolanda welcomes every new member personally, so it may take a day to be approved.</p>
+      <label class="f"><span>Your name</span><input class="in" name="name" autocomplete="name" required></label>
+      <label class="f"><span>Email</span><input class="in" name="email" type="email" autocomplete="email" required><small>Registered for the walk? Use the same email.</small></label>
+      <label class="f"><span>Mobile (optional)</span><input class="in" name="phone" type="tel" autocomplete="tel"><small>For gathering reminders by text.</small></label>
+      <div class="f" style="margin-bottom:16px"><span class="b sm" style="display:block;margin-bottom:8px">I am joining as a</span><div class="chips" id="tchips">${TYPES.map(([v,l],i)=>`<button type="button" class="chip" aria-pressed="${i===0}" data-v="${v}">${l}</button>`).join('')}</div></div>
+      <label class="chk"><input type="checkbox" name="showType" checked><span>Show this on my profile so other members know where I am coming from</span></label>
+      <div class="f" style="margin-bottom:16px"><span class="b sm" style="display:block;margin-bottom:8px">Greet me with</span><div class="chips" id="gchips"><button type="button" class="chip" aria-pressed="true" data-v="sis">Welcome back, sis</button><button type="button" class="chip" aria-pressed="false" data-v="friend">Welcome back, friend</button></div></div>
+      <label class="f"><span>A little about you (optional)</span><textarea class="in" name="about" maxlength="600" placeholder="What brings you to the circle?"></textarea><small>Please do not share medical details here.</small></label>
+      <label class="f"><span>Create a password</span><input class="in" name="password" type="password" autocomplete="new-password" minlength="8" required><small>At least 8 characters.</small></label>
+      <div class="note"><b>Circle guidelines</b><ul style="margin:6px 0 0 18px">${GUIDE.map(g=>`<li>${g}</li>`).join('')}</ul></div>
+      <label class="chk"><input type="checkbox" name="agree"><span>I agree to the circle guidelines</span></label>
+      <button class="btn wide" type="submit">Request to join</button></form>`;
+      const form=$('#fjoin');
+      const pick=id=>$$('#'+id+' .chip').forEach(c=>c.onclick=()=>{$$('#'+id+' .chip').forEach(x=>x.setAttribute('aria-pressed',x===c));});
+      pick('tchips');pick('gchips');
+      form.onsubmit=async e=>{e.preventDefault();showErr(form);const d=Object.fromEntries(new FormData(form)),b=$('button[type=submit]',form);
+        d.type=$('#tchips [aria-pressed=true]').dataset.v;d.greeting=$('#gchips [aria-pressed=true]').dataset.v;d.agree=!!form.agree.checked;d.showType=!!form.showType.checked;
+        if(!d.name.trim())return showErr(form,'Please add your name.');if(!/\S+@\S+\.\S+/.test(d.email))return showErr(form,'Please check your email address.');
+        if(d.password.length<8)return showErr(form,'Your password needs at least 8 characters.');if(!d.agree)return showErr(form,'Please agree to the circle guidelines.');
+        busy(b,1,'Sending...');
+        try{const r=await call({action:'join',...d});if(r.pending)this.pendingView(d.name);else{this.authForm('in');toast('You are in. Sign in to continue.')}}
+        catch(err){busy(b,0);showErr(form,err.message)}};
+    }
+  },
+  pendingView(name){
+    $('#authbox').innerHTML=`<div style="text-align:center"><div class="av" style="width:72px;height:72px;margin:0 auto 16px">${I('heart')}</div><h2>Thank you${name?', '+esc(String(name).split(' ')[0]):''}.</h2>
+    <p class="mu" style="margin:10px 0 22px">Your request is with Yolanda. Once she welcomes you in, sign in here with the email and password you just made.</p>
+    <button class="btn gh" id="bk">Back to sign in</button></div>`;
+    $('#bk').onclick=()=>this.authForm('in');
+  },
+  render(){
+    const d=this.data,me=d.me;document.body.className='';
+    const tabs=[['home','Home','home'],['board','Circle Board','chat'],...(me.corner?[['corner','Survivors Corner','rib']]:[]),['res','Resources','book'],['me','My Profile','user']];
+    if(!tabs.find(t=>t[0]===this.tab))this.tab='home';
+    $('#app').innerHTML=`<header class="top dark"><div class="wrap">${logo()}<div class="ttl">Sister <span>Circle</span></div>
+      <nav class="nav" aria-label="Sister Circle">${tabs.map(t=>`<button data-t="${t[0]}" ${this.tab===t[0]?'aria-current="page"':''}>${I(t[2])}${t[1]}</button>`).join('')}</nav>
+      <button class="avbtn" data-t="me" aria-label="My profile">${av(me.photo,me.name,38)}</button></div></header>
+      <main class="app"><div class="wrap" id="pg">${this['v_'+this.tab]()}</div><div class="foot">Fight Wright Foundation Sister Circle. What is shared here stays here.</div></main>
+      <nav class="bnav" aria-label="Sister Circle">${tabs.map(t=>`<button data-t="${t[0]}" ${this.tab===t[0]?'aria-current="page"':''}>${I(t[2])}${t[1].split(' ').pop()}</button>`).join('')}</nav>`;
+    $$('[data-t]').forEach(b=>b.onclick=()=>{this.tab=b.dataset.t;this.render();scrollTo(0,0)});
+    this.bind();
+  },
+  greet(){const me=this.data.me,g=me.greeting==='friend'?'friend':'sis';return`Welcome back, <em>${g}.</em>`},
+  sessionCard(s,big){
+    if(!s){const t=nextThirdThursday();return`<div class="card"><div class="next"><div class="dt"><span>&nbsp;</span><b>${I('cal')}</b><small>&nbsp;</small></div><div><p class="kick">Next gathering</p><h2 style="margin:6px 0">Coming soon</h2><p class="mu">The date, topic and place will be posted here soon.</p></div></div></div>`}
+    const d=new Date(s.date);
+    return`<div class="card"><div class="next"><div class="dt"><span>${fmt(s.date,{month:'short'})}</span><b>${fmt(s.date,{day:'numeric'})}</b><small>${fmt(s.date,{weekday:'long'})}</small></div><div>
+      <p class="kick">${big?'Next gathering':'Coming up'}</p><h2 style="margin:6px 0 0">${esc(s.topic||'Sister Circle')}</h2>
+      <div class="meta"><span>${I('clock')}${fTime(s.date)}</span>${s.location?`<span>${I('pin')}${esc(s.location)}</span>`:''}${s.format?`<span>${I('users')}${esc(s.format)}</span>`:''}${s.speaker?`<span>${I('star')}With ${esc(s.speaker)}</span>`:''}</div>
+      ${s.details?`<p style="white-space:pre-wrap;margin-bottom:14px">${esc(s.details)}</p>`:''}
+      ${s.mine?`<div class="row" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span class="pill ok">${I('check')} You are going${s.mine.guests?` + ${s.mine.guests}`:''}</span><button class="btn xs gh" data-ics="${s.id}">${I('cal')}Add to calendar</button>${s.link?`<a class="btn xs" href="${esc(s.link)}" target="_blank" rel="noopener">${I('link')}Join online</a>`:''}<button class="lk sm" data-rsvp="${s.id}" data-going="0">Can't make it</button></div>`
+      :`<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn" data-rsvp="${s.id}" data-going="1">${I('check')}I'll be there</button><button class="btn gh sm" data-guests="${s.id}">Bringing someone?</button></div>`}
+      <p class="sm mu" style="margin-top:10px">${s.going?`${s.going} ${s.going===1?'sister is':'sisters are'} going`:'Be the first to RSVP'}</p></div></div></div>`;
+  },
+  post(p,space){
+    return`<div class="post">${av(p.photo,p.name)}<div class="bd"><div><span class="nm">${esc(p.name||'Member')}</span> ${p.type?`<span class="pill gr">${esc(p.type==='In Treatment'?'In treatment':p.type)}</span>`:''}</div>
+      <div class="tx">${esc(p.body)}</div>${p.pic?`<img class="pic" src="${esc(p.pic)}" alt="" loading="lazy">`:''}
+      <div class="ft"><button class="cheer" data-cheer="${p.id}" aria-pressed="${p.cheered}" aria-label="Send love">${I('heart')}${p.cheers||''} ${p.cheers===1?'heart':'hearts'}</button><span>${ago(p.at)}</span>${p.mine?`<button class="lk sm" data-unpost="${p.id}">Remove</button>`:''}</div></div></div>`;
+  },
+  composer(space){
+    return`<form class="card compose" data-space="${space}">${av(this.data.me.photo,this.data.me.name)}<div style="flex:1"><textarea class="in" name="body" maxlength="2000" placeholder="${space==='Survivors Corner'?'Share with survivors only...':'Share encouragement, a win, or a question for the circle...'}"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap"><label class="btn gh xs" style="cursor:pointer">${I('cam')}<span>Add photo</span><input type="file" accept="image/*" name="photo" class="sr"></label><button class="btn sm" type="submit">${I('send')}Post</button></div></div></form>`;
+  },
+  v_home(){
+    const d=this.data,me=d.me;
+    return`<section class="hero"><p class="kick" style="color:#FFB3D4">Sister Circle</p><h1>${this.greet()}</h1><p>${esc(me.first)}, it is good to see you. ${d.count>1?`You are one of ${d.count} members holding each other up.`:'Thank you for being here.'}</p>
+      <div class="row">${d.next&&!d.next.mine?`<button class="btn" data-rsvp="${d.next.id}" data-going="1">${I('check')}RSVP for ${fmt(d.next.date,{month:'long',day:'numeric'})}</button>`:''}<button class="btn gh" data-t="board">${I('chat')}Go to the board</button></div></section>
+      ${this.sessionCard(d.next,1)}
+      ${d.updates.length?`<div class="card"><div class="ch"><h3>From Yolanda</h3>${I('mega')}</div>${d.updates.map(u=>`<div class="upd">${u.pinned?'<span class="pill" style="margin-bottom:6px">Pinned</span>':''}${u.title?`<h4>${esc(u.title)}</h4>`:''}<div class="tx">${esc(u.body)}</div>${u.pic?`<img class="pic" src="${esc(u.pic)}" alt="" style="margin-top:10px;border-radius:12px;max-width:100%">`:''}<p class="sm mu" style="margin-top:6px">${ago(u.at)}</p></div>`).join('')}</div>`:''}
+      ${d.spotlight?`<div class="card"><p class="kick" style="margin-bottom:10px">Sister Spotlight</p><div class="spot">${d.spotlight.pic?`<img src="${esc(d.spotlight.pic)}" alt="">`:av('',d.spotlight.title,120)}<div><h2>${esc(d.spotlight.title||'This month')}</h2><p style="white-space:pre-wrap;margin-top:8px">${esc(d.spotlight.body)}</p></div></div></div>`:''}
+      <div class="grid g2">
+        <div class="card"><div class="ch"><h3>Latest on the board</h3><button class="lk sm" data-t="board">See all</button></div>${d.board.length?d.board.slice(0,3).map(p=>this.post(p)).join(''):`<div class="empty">${I('chat')}<p>No posts yet. Start the conversation.</p></div>`}</div>
+        <div>${d.later.length?`<div class="card"><h3 style="margin-bottom:10px">Coming up</h3>${d.later.map(s=>`<div class="mrow"><div class="dt" style="padding:8px 12px;min-width:64px"><span>${fmt(s.date,{month:'short'})}</span><b style="font-size:26px">${fmt(s.date,{day:'numeric'})}</b></div><div class="bd"><b>${esc(s.topic||'Sister Circle')}</b><p class="sm mu">${fTime(s.date)}${s.location?' at '+esc(s.location):''}</p></div>${s.mine?'<span class="pill ok">Going</span>':`<button class="btn xs gh" data-rsvp="${s.id}" data-going="1">RSVP</button>`}</div>`).join('')}</div>`:''}
+        ${d.past.length?`<div class="card"><h3 style="margin-bottom:10px">Recent gatherings</h3>${d.past.slice(0,3).map(s=>`<details class="mrow" style="display:block"><summary style="cursor:pointer"><b>${esc(s.topic||'Sister Circle')}</b> <span class="sm mu">${fShort(s.date)}</span></summary><p style="white-space:pre-wrap;margin-top:8px">${esc(s.recap)}</p></details>`).join('')}</div>`:''}</div>
+      </div>`;
+  },
+  v_board(){const b=this.data.board;return`<div style="margin:22px 0 14px"><p class="kick">The circle</p><h1 style="font-size:32px">Circle Board</h1><p class="mu">Encouragement, wins, questions and prayers. Only members can see this.</p></div>${this.composer('All Sisters')}<div class="card">${b.length?b.map(p=>this.post(p)).join(''):`<div class="empty">${I('chat')}<p>No posts yet. Be the first to share.</p></div>`}</div>`},
+  v_corner(){const b=this.data.cornerBoard;return`<div class="corner-h"><p class="kick" style="color:#FFB3D4">Survivors only</p><h1 style="font-size:32px;margin:6px 0">Survivors Corner</h1><p>A quieter space just for survivors and sisters in treatment. Caregivers and supporters cannot see anything posted here.</p></div>${this.composer('Survivors Corner')}<div class="card">${b.length?b.map(p=>this.post(p)).join(''):`<div class="empty">${I('rib')}<p>This is your space. Say hello.</p></div>`}</div>`},
+  v_res(){const r=this.data.resources;return`<div style="margin:22px 0 14px"><p class="kick">Helpful links</p><h1 style="font-size:32px">Resources</h1><p class="mu">Handouts and links shared at our gatherings.</p></div><div class="card">${r.length?r.map(x=>`<a class="res" ${x.link?`href="${esc(x.link)}" target="_blank" rel="noopener"`:''}><span class="ic">${I('book')}</span><span><b>${esc(x.title)}</b>${x.cat?` <span class="pill gr">${esc(x.cat)}</span>`:''}<br><span class="sm mu">${esc(x.desc)}</span></span></a>`).join(''):`<div class="empty">${I('book')}<p>Resources from our gatherings will show up here.</p></div>`}</div>
+    ${this.data.past.length?`<div class="card"><h3 style="margin-bottom:6px">Gathering recaps</h3>${this.data.past.map(s=>`<details class="mrow" style="display:block"><summary style="cursor:pointer"><b>${esc(s.topic||'Sister Circle')}</b> <span class="sm mu">${fShort(s.date)}${s.speaker?' with '+esc(s.speaker):''}</span></summary><p style="white-space:pre-wrap;margin-top:8px">${esc(s.recap)}</p></details>`).join('')}</div>`:''}`},
+  v_me(){const me=this.data.me;return`<div style="margin:22px 0 14px"><p class="kick">My profile</p><h1 style="font-size:32px">${esc(me.name)}</h1></div>
+    <form class="card" id="prof" novalidate><div style="display:flex;gap:16px;align-items:center;margin-bottom:18px">${av(me.photo,me.name,84)}<label class="btn gh sm" style="cursor:pointer">${I('cam')}<span>${me.photo?'Change photo':'Add a photo'}</span><input type="file" accept="image/*" name="photo" class="sr"></label></div>
+    <label class="f"><span>About me</span><textarea class="in" name="about" maxlength="600">${esc(me.about)}</textarea><small>Please do not share medical details here.</small></label>
+    <label class="f"><span>Mobile</span><input class="in" name="phone" type="tel" value="${esc(me.phone)}"></label>
+    <div class="f" style="margin-bottom:16px"><span class="b sm" style="display:block;margin-bottom:8px">Greet me with</span><div class="chips" id="gchips"><button type="button" class="chip" aria-pressed="${me.greeting!=='friend'}" data-v="sis">Welcome back, sis</button><button type="button" class="chip" aria-pressed="${me.greeting==='friend'}" data-v="friend">Welcome back, friend</button></div></div>
+    <label class="chk"><input type="checkbox" name="showType" ${me.showType?'checked':''}><span>Show that I am a <b>${esc((TYPES.find(t=>t[0]===me.type)||['',me.type])[1].toLowerCase())}</b> on my posts</span></label>
+    <div class="mbtns"><button class="btn" type="submit">Save my profile</button><button class="btn gh" type="button" id="out">${I('out')}Sign out</button></div></form>`},
+  bind(){
+    $$('[data-rsvp]').forEach(b=>b.onclick=()=>this.rsvp(b.dataset.rsvp,b.dataset.going==='1',0,b));
+    $$('[data-guests]').forEach(b=>b.onclick=()=>{const m=modal(`<div class="mh"><h3>Bringing someone?</h3>${xbtn}</div><p class="mu" style="margin-bottom:14px">Caregivers, family and friends are welcome. How many people are coming with you?</p><div class="chips" id="gn">${[1,2,3,4].map(n=>`<button class="chip" data-n="${n}" aria-pressed="${n===1}">${n}</button>`).join('')}</div><div class="mbtns" style="margin-top:18px"><button class="btn" id="gok">RSVP for me + guests</button></div>`);$$('#gn .chip',m).forEach(c=>c.onclick=()=>$$('#gn .chip',m).forEach(x=>x.setAttribute('aria-pressed',x===c)));$('#gok',m).onclick=e=>this.rsvp(b.dataset.guests,true,+$('#gn [aria-pressed=true]',m).dataset.n,e.target)});
+    $$('[data-ics]').forEach(b=>b.onclick=()=>this.ics(b.dataset.ics));
+    $$('[data-cheer]').forEach(b=>b.onclick=()=>this.act({action:'cheer',id:b.dataset.cheer},b,true));
+    $$('[data-unpost]').forEach(b=>b.onclick=()=>{if(confirm('Remove this post?'))this.act({action:'unpost',id:b.dataset.unpost},b)});
+    $$('form.compose').forEach(f=>{const fi=$('input[type=file]',f);fi.onchange=()=>{$('span',fi.parentNode).textContent=fi.files[0]?'Photo added':'Add photo'};
+      f.onsubmit=async e=>{e.preventDefault();showErr(f);const body=f.body.value.trim();if(!body)return showErr(f,'Write something first.');const b=$('button[type=submit]',f);busy(b,1,'Posting...');
+        try{const photo=await readPhoto(fi.files[0]);await this.act({action:'post',space:f.dataset.space,body,photo},null);toast('Posted')}catch(err){busy(b,0);showErr(f,err.message)}}});
+    const pf=$('#prof');if(pf){$$('#gchips .chip').forEach(c=>c.onclick=()=>$$('#gchips .chip').forEach(x=>x.setAttribute('aria-pressed',x===c)));
+      $('#out').onclick=()=>{store.set('fwf_circle',null);this.token=null;this.data=null;this.authView('in')};
+      const fi=$('input[type=file]',pf);fi.onchange=()=>{$('span',fi.parentNode).textContent=fi.files[0]?'Photo ready to save':'Change photo'};
+      pf.onsubmit=async e=>{e.preventDefault();const b=$('button[type=submit]',pf);busy(b,1);try{const photo=await readPhoto(fi.files[0]);await this.act({action:'profile',fields:{about:pf.about.value,phone:pf.phone.value,greeting:$('#gchips [aria-pressed=true]').dataset.v,showType:pf.showType.checked},photo},null);toast('Profile saved')}catch(err){busy(b,0);showErr(pf,err.message)}}}
+  },
+  async act(body,btn,quiet){
+    if(btn)btn.disabled=true;
+    try{this.data=await call({...body,token:this.token});this.render()}
+    catch(e){if(btn)btn.disabled=false;if(e.status===401)return this.start();if(!quiet)toast(e.message);else toast(e.message);throw e}
+  },
+  async rsvp(id,going,guests,btn){
+    try{busy(btn,1,going?'Saving...':'Updating...');await this.act({action:'rsvp',session:id,going,guests},null);closeModal();toast(going?'You are on the list. See you there.':'Thanks for letting us know.')}catch(e){busy(btn,0)}
+  },
+  ics(id){
+    const s=[this.data.next,...this.data.later].find(x=>x&&x.id===id);if(!s)return;
+    const st=new Date(s.date),en=new Date(st.getTime()+2*36e5),f=d=>d.toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
+    const t=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Fight Wright Foundation//Sister Circle//EN','BEGIN:VEVENT','UID:'+id+'@fightwrightfoundation.org','DTSTAMP:'+f(new Date()),'DTSTART:'+f(st),'DTEND:'+f(en),'SUMMARY:Sister Circle: '+(s.topic||'Monthly gathering').replace(/[,;]/g,' '),'LOCATION:'+(s.location||'').replace(/[,;]/g,' '),'DESCRIPTION:'+(s.link?'Join online: '+s.link:'Fight Wright Foundation Sister Circle'),'END:VEVENT','END:VCALENDAR'].join('\r\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/calendar'}));a.download='sister-circle.ics';a.click();
+  }
+};
+
+function resetView(code){
+  Member.authView('in');
+  const box=$('#authbox');
+  box.innerHTML=`<form id="frs" novalidate><h2 style="margin-bottom:6px">Set your password</h2><p class="mu" style="margin-bottom:18px" id="rsw">Checking your link...</p>
+    <label class="f"><span>New password</span><input class="in" name="password" type="password" autocomplete="new-password" minlength="8"><small>At least 8 characters.</small></label><button class="btn wide" type="submit">Save and sign in</button></form>`;
+  const f=$('#frs');
+  call({action:'reset',code}).then(r=>{$('#rsw').textContent=`Hi ${String(r.name||'').split(' ')[0]}, choose a new password for ${r.email}.`}).catch(e=>{$('#rsw').textContent='';showErr(f,e.message)});
+  f.onsubmit=async e=>{e.preventDefault();const b=$('button',f);busy(b,1);try{const r=await call({action:'reset',code,password:f.password.value});store.set('fwf_circle',r.token);Member.token=r.token;history.replaceState(null,'',location.pathname);Member.start()}catch(err){busy(b,0);showErr(f,err.message)}};
+}
+
+/* =================== PROGRAMS ADMIN =================== */
+const OPT={
+  status:['Pending','Approved','Paused'], format:['In person','Virtual','In person and virtual'], sstatus:['Upcoming','Done','Cancelled'],
+  ptype:['Hospital','Cancer center','Clinic','Community partner'], pstatus:['Talking','Confirmed','Active','Paused'],
+  pay:['Pledged','Invoiced','Partially paid','Paid','Overdue','In-kind'], prog:['Walk & Festival','Wright Beside You','Sister Circle','Gala','General Support'],
+  tier:['Presenting','Platinum','Gold','Silver','Bronze','Community','In-kind'], mtype:['Survivor','In Treatment','Caregiver','Family','Supporter'],stage:['Prospect','Asked','Following up','Committed','Declined']
+};
+// One schema per list drives every add/edit form in the admin.
+const SCHEMA={
+  sessions:{one:'gathering',title:r=>r.Topic||'Sister Circle',fields:[['Topic','text','Topic or theme'],['Date','datetime','Date and time'],['Speaker','text','Guest speaker'],['Location','text','Location'],['Format','select','Format',OPT.format],['Join Link','url','Online join link (members see it after they RSVP)'],['Details','area','What to expect'],['Recap','area','Recap (shows to members after the gathering)'],['Status','select','Status',OPT.sstatus]]},
+  resources:{one:'resource',title:r=>r.Title,fields:[['Title','text','Title'],['Link','url','Link'],['Category','text','Category (for example Nutrition, Insurance, Self-care)'],['Description','area','Short description'],['Active','check','Show to members']]},
+  partners:{one:'partner',title:r=>r.Partner,fields:[['Partner','text','Hospital or partner name'],['Type','select','Type',OPT.ptype],['Status','select','Status',OPT.pstatus],['Contact Name','text','Contact name'],['Contact Email','email','Contact email'],['Contact Phone','tel','Contact phone'],['Address','text','Address'],['Show Publicly','check','They agreed to be named publicly'],['Notes','area','Notes']]},
+  deliveries:{one:'delivery',title:r=>r.Summary,fields:[['Date','date','Date delivered'],['Partner','partner','Delivered to'],['Bags','number','Number of bags'],['Delivered By','text','Delivered by'],['Sponsored By','text','Sponsored by (optional)'],['Notes','area','Notes (no patient names or medical details)']]},
+  inventory:{one:'item',title:r=>r.Item,fields:[['Item','text','Item'],['Per Bag','number','How many go in each bag'],['In Stock','number','How many we have'],['Reorder At','number','Warn me when stock drops to'],['Notes','text','Notes (where to buy, brand, etc.)']]},
+  assembly:{one:'packing day',title:r=>r.Title,fields:[['Title','text','Name','Packing day'],['Date','datetime','Date and time'],['Location','text','Location'],['Volunteers Needed','number','Volunteers needed'],['Bags Goal','number','Bags to pack'],['Bags Packed','number','Bags actually packed'],['Notes','area','Notes']]},
+  sponsors:{one:'sponsor',title:r=>r['Sponsor Name'],fields:[['Sponsor Name','text','Company or sponsor name'],['Stage','select','Where things stand',OPT.stage],['Ask Amount','money','Amount we asked for'],['Next Follow-up','date','Follow up on'],['Tier','select','Level',OPT.tier],['Program','multi','What they sponsor',OPT.prog],['Year','number','Year',String(new Date().getFullYear())],['Commitment','money','Amount pledged'],['Amount Received','money','Amount received so far'],['Payment Status','select','Payment status',OPT.pay],['Contact Name','text','Contact person'],['Contact Email','email','Contact email'],['Contact Phone','tel','Contact phone'],['Website','url','Website'],['Benefits Promised','area','What we promised them (one per line, for example Logo on shirts)'],['Thank You Sent','date','Thank-you sent on'],['Renewal Date','date','Reach out again on'],['Show on Walk Day','check','Show their logo on the walk portal'],['Notes','area','Notes']]}
+};
+const mainTok=()=>{try{return JSON.parse(localStorage.getItem('fwf-admin-tok')||'""')||''}catch(e){return ''}};
+const Admin={
+  token:store.get('fwf_padmin'),d:null,tab:'home',sub:{},name:'',
+  async start(){
+    document.body.className='adm';
+    if(!this.token&&mainTok()){try{const r=await call({action:'sso',token:mainTok()});this.token=r.token;store.set('fwf_padmin',r.token)}catch(e){}}
+    if(!this.token)return this.loginView();
+    $('#app').innerHTML='<div class="load"><div class="spin"></div>Loading your programs</div>';
+    try{const r=await call({action:'admin',op:'load',token:this.token});this.d=r.data;this.name=r.name;this.render()}
+    catch(e){if(e.status===401){const retry=this.token&&mainTok()&&!this._r;this._r=1;this.token=null;store.set('fwf_padmin',null);return retry?this.start():this.loginView()}$('#app').innerHTML=`<div class="wrap"><div class="card" style="margin-top:30px"><div class="err">${esc(e.message)}</div><button class="btn" onclick="Admin.start()">Try again</button></div></div>`}
+  },
+  loginView(msg){
+    document.body.className='';
+    $('#app').innerHTML=`<div class="auth"><section class="art"><div style="position:relative;z-index:1">${logo()}<h1>Programs <em>Admin</em></h1><p>Sister Circle, Wright Beside You care bags, and sponsorships, all in one place.</p></div><span class="ring" style="width:420px;height:420px;right:-140px;top:-120px"></span></section>
+    <section class="form"><div class="box"><h2 style="margin-bottom:6px">Staff sign in</h2><p class="mu" style="margin-bottom:20px">Sign in once on the main Fight Wright portal with your staff email and password. Sister Circle and Programs open from there.</p>
+    <div id="fal"></div><a class="btn wide dk" href="/admin?next=programs">Sign in on the main portal</a></div></section></div>`;
+    const f=$('#fal');if(msg)showErr(f,msg);
+  },
+  async op(body,btn,msg){
+    busy(btn,1);
+    try{const r=await call({action:'admin',token:this.token,...body});if(r.data)this.d=r.data;closeModal();this.render();if(msg)toast(msg);return r}
+    catch(e){busy(btn,0);if(e.status===401){this.token=null;store.set('fwf_padmin',null);return this.loginView('Please sign in again.')}toast(e.message);throw e}
+  },
+  render(){
+    const d=this.d,pend=d.members.filter(m=>m.Status==='Pending').length;
+    const tabs=[['home','Overview','home','Home'],['circle','Sister Circle','users','Circle'],['bags','Care Bags','gift','Care Bags'],['spons','Sponsors','dollar','Sponsors'],['report','Reports','file','Reports'],...(d.full?[['access','Access','lock','Access']]:[])];
+    $('#app').innerHTML=`<header class="top"><div class="wrap">${logo()}<div class="ttl">Programs</div><nav class="nav">${tabs.map(t=>`<button data-at="${t[0]}" ${this.tab===t[0]?'aria-current="page"':''}>${I(t[2])}${t[1]}${t[0]==='circle'&&pend?` <span class="cnt">${pend}</span>`:''}</button>`).join('')}</nav><button class="btn xs gh" style="color:#fff;border-color:rgba(255,255,255,.35)" id="amain" onclick="location.href='/admin'">Main portal</button><button class="btn xs gh" style="color:#fff;border-color:rgba(255,255,255,.35)" id="aout">Sign out</button></div></header>
+    <main class="app"><div class="wrap" id="pg">${this['t_'+this.tab]()}</div></main>
+    <nav class="bnav">${tabs.map(t=>`<button data-at="${t[0]}" ${this.tab===t[0]?'aria-current="page"':''}>${I(t[2])}${t[3]}</button>`).join('')}</nav>`;
+    $$('[data-at]').forEach(b=>b.onclick=()=>{this.tab=b.dataset.at;this.render();scrollTo(0,0)});
+    $$('[data-sub]').forEach(b=>b.onclick=()=>{this.sub[this.tab]=b.dataset.sub;this.render()});
+    $('#aout').onclick=()=>{store.set('fwf_padmin',null);store.set('fwf-admin-tok',null);this.token=null;location.href='/'};
+    $$('[data-edit]').forEach(b=>b.onclick=e=>{e.stopPropagation();const [k,id]=b.dataset.edit.split(':');this.edit(k,id)});
+    $$('[data-add]').forEach(b=>b.onclick=()=>this.edit(b.dataset.add));
+    this.bind&&this.bind();this.bind=null;
+  },
+  subnav(items){const cur=this.sub[this.tab]||items[0][0];return[`<div class="sub">${items.map(i=>`<button data-sub="${i[0]}" ${cur===i[0]?'aria-current="page"':''}>${i[1]}${i[2]?` <span class="cnt">${i[2]}</span>`:''}</button>`).join('')}</div>`,cur]},
+  nextSession(){const n=Date.now();return this.d.sessions.filter(s=>s.Status!=='Cancelled'&&s.Date&&new Date(s.Date)>n-4*36e5).sort((a,b)=>new Date(a.Date)-new Date(b.Date))[0]},
+  going(sid){return this.d.rsvps.filter(r=>(r.Session||[]).includes(sid)&&r.Status!=='Cancelled')},
+  bagStats(){const y=new Date().getFullYear(),dl=this.d.deliveries,yr=dl.filter(x=>String(x.Date||'').startsWith(y)),m=new Date().toISOString().slice(0,7);
+    return{year:yr.reduce((n,x)=>n+(+x.Bags||0),0),month:dl.filter(x=>String(x.Date||'').startsWith(m)).reduce((n,x)=>n+(+x.Bags||0),0),all:dl.reduce((n,x)=>n+(+x.Bags||0),0),partners:this.d.partners.filter(p=>p.Status==='Active').length}},
+  sponStats(list){list=(list||this.d.sponsors).filter(committed);const c=list.reduce((n,s)=>n+(+s.Commitment||0),0),r=list.reduce((n,s)=>n+recv(s),0);return{count:list.length,committed:c,received:r,owed:Math.max(0,c-r),thanks:list.filter(s=>!s['Thank You Sent']).length}},
+  missList(){
+    const now=Date.now(),D=864e5,last={};
+    const ses=new Map(this.d.sessions.map(s=>[s.id,s]));
+    this.d.rsvps.forEach(r=>{const s=ses.get((r.Session||[])[0]);if(!s||!s.Date||new Date(s.Date)>now)return;if(!(r.Attended||r.Status==='Going'))return;const e=String(r.Email||'').toLowerCase(),t=new Date(s.Date).getTime();if(!last[e]||t>last[e])last[e]=t});
+    return this.d.members.filter(m=>m.Status==='Approved').map(m=>{const e=String(m.Email||'').toLowerCase(),l=last[e]||0,joined=new Date(m['Approved At']||m['Joined At']||now).getTime(),ro=m['Last Reached Out']?new Date(m['Last Reached Out']+'T12:00:00').getTime():0;return{m,last:l,joined,ro}})
+      .filter(x=>(x.last?now-x.last>90*D:now-x.joined>60*D)&&(!x.ro||now-x.ro>30*D)).sort((a,b)=>a.last-b.last);
+  },
+  followUps(){const t=todayISO();return this.d.sponsors.filter(s=>['Prospect','Asked','Following up'].includes(s.Stage)&&s['Next Follow-up']&&s['Next Follow-up']<=t)},
+  low(){return this.d.inventory.filter(i=>i['Reorder At']!=null&&(i['In Stock']||0)<=i['Reorder At'])},
+  t_home(){
+    const d=this.d,pend=d.members.filter(m=>m.Status==='Pending'),ns=this.nextSession(),b=this.bagStats(),s=this.sponStats(),low=this.low();
+    const todo=[];
+    if(pend.length)todo.push([`${pend.length} ${pend.length===1?'person is':'people are'} waiting to join Sister Circle`,'circle','members','Review']);
+    if(!ns)todo.push(['No upcoming Sister Circle gathering is set','circle','sessions','Add dates']);
+    if(low.length)todo.push([`${low.length} care bag ${low.length===1?'item is':'items are'} running low`,'bags','inventory','View']);
+    if(s.thanks)todo.push([`${s.thanks} ${s.thanks===1?'sponsor has':'sponsors have'} not been thanked yet`,'spons','list',`View`]);
+    const fu=this.followUps().length;if(fu)todo.push([`${fu} sponsor ${fu===1?'follow-up is':'follow-ups are'} due`,'spons','pipe','Follow up']);
+    const ms=this.missList().length;if(ms)todo.push([`${ms} ${ms===1?'sister has':'sisters have'} not been to a gathering in a while`,'circle','miss','Reach out']);
+    const od=d.sponsors.filter(x=>x['Payment Status']==='Overdue').length;if(od)todo.push([`${od} sponsor ${od===1?'payment is':'payments are'} overdue`,'spons','list','View']);
+    this.bind=()=>$$('[data-go]').forEach(x=>x.onclick=()=>{const[t,sb]=x.dataset.go.split(':');this.tab=t;if(sb)this.sub[t]=sb;this.render();scrollTo(0,0)});
+    return`<div style="margin:24px 0 16px"><p class="kick">Programs admin</p><h1 style="font-size:34px">Hi ${esc(String(this.name||'').split(' ')[0]||'there')}.</h1><p class="mu">Here is everything happening across your programs.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn sm" onclick="Importer.open()">${I('upload')}Upload your data</button><button class="btn sm gh" data-go="report:">${I('file')}Impact report</button></div></div>
+    <div class="grid g4" style="margin-bottom:16px"><div class="stat pk"><span>Sister Circle members</span><b>${d.members.filter(m=>m.Status==='Approved').length}</b></div><div class="stat"><span>Going to next gathering</span><b>${ns?this.going(ns.id).reduce((n,r)=>n+1+(r.Guests||0),0):0}</b></div><div class="stat"><span>Care bags delivered this year</span><b>${b.year.toLocaleString()}</b></div><div class="stat"><span>Sponsorships received</span><b>${money(s.received)}</b></div></div>
+    <div class="grid g2"><div class="card"><h3 style="margin-bottom:8px">Needs your attention</h3>${todo.length?todo.map(t=>`<div class="mrow"><span class="ic" style="color:var(--pk)">${I('bell')}</span><div class="bd">${t[0]}</div><button class="btn xs gh" data-go="${t[1]}:${t[2]}">${t[3]}</button></div>`).join(''):`<div class="empty">${I('check')}<p>You are all caught up.</p></div>`}</div>
+    <div class="card"><h3 style="margin-bottom:8px">Next Sister Circle</h3>${ns?`<p class="kick">${fDate(ns.Date)} at ${fTime(ns.Date)}</p><h2 style="margin:6px 0">${esc(ns.Topic||'Sister Circle')}</h2><p class="mu sm">${esc([ns.Location,ns.Speaker&&'With '+ns.Speaker].filter(Boolean).join(' . '))}</p><div class="mbtns"><button class="btn sm" data-go="circle:sessions">See RSVPs</button><button class="btn sm gh" data-go="circle:updates">Post an update</button></div>`:`<p class="mu">Nothing scheduled yet. Members see "Coming soon" until you add a date.</p><button class="btn sm" style="margin-top:12px" data-go="circle:sessions">Schedule gatherings</button>`}</div></div>
+    <div class="grid g2"><div class="card"><h3>Sponsorships ${new Date().getFullYear()}</h3><p class="mu sm" style="margin:4px 0 10px">${money(s.received)} received of ${money(s.committed)} pledged</p><div class="bar"><i style="width:${s.committed?Math.min(100,s.received/s.committed*100):0}%"></i></div><p class="sm" style="margin-top:10px">${s.count} sponsors . <b>${money(s.owed)}</b> still owed</p></div>
+    <div class="card"><h3>Wright Beside You</h3><p class="mu sm" style="margin:4px 0 10px">${b.month} bags this month . ${b.all.toLocaleString()} all time</p><p class="sm">${b.partners} active ${b.partners===1?'partner':'partners'}${low.length?` . <span class="flag">${low.length} low on stock</span>`:''}</p></div></div>`;
+  },
+  t_circle(){
+    const d=this.d,pend=d.members.filter(m=>m.Status==='Pending');
+    const [nav,cur]=this.subnav([['members','Members',pend.length],['miss','We miss you',this.missList().length],['sessions','Gatherings'],['updates','Updates'],['board','Board'],['resources','Resources']]);
+    return nav+this['c_'+cur]();
+  },
+  c_members(){
+    const d=this.d,q=(this.mq||'').toLowerCase(),ft=this.mf||'';
+    const pend=d.members.filter(m=>m.Status==='Pending');
+    const list=d.members.filter(m=>m.Status!=='Pending'&&(!ft||m.Status===ft||m['Member Type']===ft)&&(!q||(m.Name+' '+m.Email).toLowerCase().includes(q))).sort((a,b)=>String(a.Name).localeCompare(b.Name));
+    this.bind=()=>{
+      $$('[data-appr]').forEach(b=>b.onclick=()=>{const m=d.members.find(x=>x.id===b.dataset.appr);this.op({op:'approve',id:m.id,corner:$('#cn-'+m.id)?.checked},b,`${m.Name} is in`)});
+      $$('[data-mem]').forEach(r=>r.onclick=()=>this.memberModal(r.dataset.mem));
+      const s=$('#mq');if(s){s.oninput=()=>{this.mq=s.value;const p=s.selectionStart;this.render();const n=$('#mq');n.focus();n.setSelectionRange(p,p)}}
+      const f=$('#mf');if(f)f.onchange=()=>{this.mf=f.value;this.render()};
+    };
+    return`${pend.length?`<div class="card" style="border-color:#F2C3D9"><div class="ch"><h3>Waiting to join</h3><span class="pill">${pend.length}</span></div>${pend.map(m=>`<div class="mrow">${av(m.Photo,m.Name)}<div class="bd"><b>${esc(m.Name)}</b> <span class="pill gr">${esc(m['Member Type']||'')}</span><p class="sm mu">${esc(m.Email)}${m.Phone?' . '+esc(m.Phone):''} . asked ${ago(m['Joined At'])}</p>${m['About Me']?`<p class="sm" style="margin-top:4px">"${esc(m['About Me'])}"</p>`:''}<label class="chk sm" style="margin:8px 0 0"><input type="checkbox" id="cn-${m.id}" ${['Survivor','In Treatment'].includes(m['Member Type'])?'checked':''}><span>Let her into Survivors Corner</span></label></div><button class="btn sm ok" data-appr="${m.id}">${I('check')}Approve</button></div>`).join('')}</div>`:''}
+    <div class="card"><div class="ch"><h3>Members</h3><span class="mu sm">${d.members.filter(m=>m.Status==='Approved').length} approved</span></div>
+    <div class="toolbar"><input class="in" id="mq" placeholder="Search by name or email" value="${esc(this.mq||'')}"><select class="in" id="mf"><option value="">Everyone</option>${['Approved','Paused',...OPT.mtype].map(o=>`<option ${ft===o?'selected':''}>${o}</option>`).join('')}</select></div>
+    ${list.length?`<div class="tscroll"><table class="tbl stack"><thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Corner</th><th>Last seen</th></tr></thead><tbody>${list.map(m=>`<tr class="click" data-mem="${m.id}"><td data-l="Name"><b>${esc(m.Name)}</b><br><span class="sm mu">${esc(m.Email)}</span></td><td data-l="Type">${esc(m['Member Type']||'')}</td><td data-l="Status"><span class="pill ${m.Status==='Approved'?'ok':'warn'}">${esc(m.Status)}</span></td><td data-l="Corner">${m['Survivors Corner']?'Yes':'No'}</td><td data-l="Last seen">${m['Last Sign In']?ago(m['Last Sign In']):'Not yet'}</td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">${I('users')}<p>${d.members.length?'No one matches.':'No members yet. Share the Sister Circle link to invite people.'}</p></div>`}
+    <div class="note" style="margin-top:14px;margin-bottom:0"><b>Invite link:</b> ${esc(location.origin+'/sistercircle')}<button class="btn xs gh" style="margin-left:8px" onclick="navigator.clipboard.writeText('${esc(location.origin+'/sistercircle')}').then(()=>toast('Link copied'))">${I('copy')}Copy</button></div></div>`;
+  },
+  memberModal(id){
+    const m=this.d.members.find(x=>x.id===id);
+    const md=modal(`<div class="mh"><div style="display:flex;gap:12px;align-items:center">${av(m.Photo,m.Name,52)}<div><h3>${esc(m.Name)}</h3><p class="sm mu">${esc(m.Email)}${m.Phone?' . '+esc(m.Phone):''}</p></div></div>${xbtn}</div>
+      ${m['About Me']?`<p class="note">${esc(m['About Me'])}</p>`:''}
+      <form id="mm"><div class="frow"><label class="f"><span>Member type</span><select class="in" name="Member Type">${OPT.mtype.map(o=>`<option ${m['Member Type']===o?'selected':''}>${o}</option>`).join('')}</select></label><label class="f"><span>Status</span><select class="in" name="Status">${OPT.status.map(o=>`<option ${m.Status===o?'selected':''}>${o}</option>`).join('')}</select></label></div>
+      <label class="chk"><input type="checkbox" name="Survivors Corner" ${m['Survivors Corner']?'checked':''}><span>Can see Survivors Corner</span></label>
+      <div class="mbtns"><button class="btn" type="submit">Save</button><button class="btn gh" type="button" id="rl">${I('link')}Password reset link</button></div></form><div id="rlout"></div>
+      <p class="sm mu" style="margin-top:14px">Joined ${fShort(m['Joined At'])}${m['Approved At']?' . approved '+fShort(m['Approved At']):''}. Set Status to Paused to remove access without losing her history.</p>`);
+    $('#mm',md).onsubmit=e=>{e.preventDefault();const f=e.target;this.op({op:'save',kind:'members',id,fields:{'Member Type':f['Member Type'].value,Status:f.Status.value,'Survivors Corner':f['Survivors Corner'].checked}},$('button[type=submit]',f),'Saved')};
+    $('#rl',md).onclick=async e=>{busy(e.target,1,'Making link...');try{const r=await call({action:'admin',op:'resetLink',id,token:this.token});$('#rlout',md).innerHTML=linkBox(r.link,`Text or email this link to ${esc(m.Name.split(' ')[0])}. It works for 14 days and lets her set a new password.`,m.Phone,`Hi ${m.Name.split(' ')[0]}, here is your link to set your Sister Circle password: ${r.link}`)}catch(err){toast(err.message)}busy(e.target,0)};
+  },
+  c_sessions(){
+    const d=this.d,now=Date.now(),up=d.sessions.filter(s=>!s.Date||new Date(s.Date)>now-4*36e5).sort((a,b)=>new Date(a.Date)-new Date(b.Date)),past=d.sessions.filter(s=>s.Date&&new Date(s.Date)<=now-4*36e5);
+    this.bind=()=>{$$('[data-rs]').forEach(b=>b.onclick=()=>this.rsvpModal(b.dataset.rs));const g=$('#gen');if(g)g.onclick=()=>this.genModal()};
+    const row=s=>{const g=this.going(s.id),n=g.reduce((a,r)=>a+1+(r.Guests||0),0);return`<div class="mrow"><div class="dt" style="padding:8px 12px;min-width:70px"><span>${s.Date?fmt(s.Date,{month:'short'}):'TBD'}</span><b style="font-size:26px">${s.Date?fmt(s.Date,{day:'numeric'}):'?'}</b></div><div class="bd"><b>${esc(s.Topic||'Topic to be announced')}</b> ${s.Status&&s.Status!=='Upcoming'?`<span class="pill ${s.Status==='Done'?'ok':'bad'}">${esc(s.Status)}</span>`:''}<p class="sm mu">${s.Date?fTime(s.Date):''}${s.Location?' . '+esc(s.Location):''}${s.Speaker?' . with '+esc(s.Speaker):''}</p></div><button class="btn xs gh" data-rs="${s.id}">${I('users')}${n} going</button><button class="btn xs" data-edit="sessions:${s.id}">${I('edit')}Edit</button></div>`};
+    return`<div class="card"><div class="ch"><h3>Upcoming gatherings</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" id="gen">${I('cal')}Add the next 3 months</button><button class="btn sm" data-add="sessions">${I('plus')}Add one</button></div></div>${up.length?up.map(row).join(''):`<div class="empty">${I('cal')}<p>Nothing scheduled yet. Tap "Add the next 3 months" to fill in the third Thursdays.</p></div>`}</div>
+    ${past.length?`<div class="card"><h3 style="margin-bottom:6px">Past gatherings</h3><p class="sm mu" style="margin-bottom:8px">Add a recap so members who missed it can catch up.</p>${past.map(row).join('')}</div>`:''}`;
+  },
+  genModal(){
+    const n0=nextThirdThursday(),ms=[0,1,2].map(i=>thirdThursday(n0.getFullYear(),n0.getMonth()+i));
+    const md=modal(`<div class="mh"><h3>Add the next third Thursdays</h3>${xbtn}</div><p class="mu" style="margin-bottom:14px">${ms.map(t=>t.toLocaleDateString('en-US',{month:'long',day:'numeric'})).join(', ')}. You can change the topic and details for each one afterward.</p>
+      <form id="gf"><div class="frow"><label class="f"><span>Start time</span><input class="in" type="time" name="time" value="18:30"></label><label class="f"><span>Format</span><select class="in" name="format">${OPT.format.map(o=>`<option>${o}</option>`).join('')}</select></label></div><label class="f"><span>Location</span><input class="in" name="loc" placeholder="Where you usually meet"></label><button class="btn wide" type="submit">Add ${ms.length} gatherings</button></form>`);
+    $('#gf',md).onsubmit=async e=>{e.preventDefault();const f=e.target,b=$('button',f);busy(b,1,'Adding...');const[h,mi]=f.time.value.split(':').map(Number);
+      try{for(const t of ms){const dt=new Date(t);dt.setHours(h,mi||0,0,0);if(this.d.sessions.some(s=>s.Date&&new Date(s.Date).toDateString()===dt.toDateString()))continue;await call({action:'admin',token:this.token,op:'save',kind:'sessions',fields:{Topic:'Sister Circle',Date:dt.toISOString(),Location:f.loc.value,Format:f.format.value,Status:'Upcoming'}})}
+        await this.op({op:'load'},null,'Gatherings added')}catch(err){busy(b,0);toast(err.message)}};
+  },
+  c_miss(){
+    const list=this.missList();
+    this.bind=()=>$$('[data-ro]').forEach(b=>b.onclick=()=>this.op({op:'save',kind:'members',id:b.dataset.ro,fields:{'Last Reached Out':todayISO()}},b,'Noted. She will come off the list for 30 days.'));
+    return`<div class="card"><div class="ch"><h3>We miss you</h3><span class="sm mu">Sisters who have not been to a gathering in 3 months</span></div><p class="note">A quick text can mean a lot. When you reach out, tap <b>I checked on her</b> and she will come off this list for 30 days.</p>
+    ${list.length?list.map(({m,last})=>{const first=String(m.Name||'').split(' ')[0],ph=String(m.Phone||'').replace(/[^\d+]/g,''),msg=`Hi ${first}, it's Yolanda from Fight Wright Sister Circle. We have been thinking about you and miss seeing you. No pressure at all, just wanted you to know your sisters are here for you. Our next gathering is on the third Thursday and you are always welcome.`;
+      return`<div class="mrow">${av(m.Photo,m.Name)}<div class="bd"><b>${esc(m.Name)}</b> <span class="pill gr">${esc(m['Member Type']||'')}</span><p class="sm mu">${last?'Last came '+fShort(new Date(last).toISOString()):'Has not come to a gathering yet'}${m['Last Reached Out']?' . you reached out '+fShort(m['Last Reached Out']):''}</p></div>
+      ${ph?`<a class="btn xs gh" href="sms:${esc(ph)}?&body=${encodeURIComponent(msg)}">${I('chat')}Text</a><a class="btn xs gh" href="tel:${esc(ph)}">${I('phone')}Call</a>`:''}${m.Email?`<a class="btn xs gh" href="mailto:${esc(m.Email)}?subject=${encodeURIComponent('Thinking of you')}&body=${encodeURIComponent(msg)}">${I('send')}Email</a>`:''}<button class="btn xs ok" data-ro="${m.id}">${I('check')}I checked on her</button></div>`}).join('')
+    :`<div class="empty">${I('heart')}<p>Everyone has been around lately. Nobody to check on right now.</p></div>`}</div>`;
+  },
+  rsvpModal(sid){
+    const s=this.d.sessions.find(x=>x.id===sid),list=this.d.rsvps.filter(r=>(r.Session||[]).includes(sid)).sort((a,b)=>(a.Status==='Cancelled')-(b.Status==='Cancelled')||String(a.Name).localeCompare(b.Name));
+    const md=modal(`<div class="mh"><div><h3>${esc(s.Topic||'Sister Circle')}</h3><p class="sm mu">${s.Date?fDate(s.Date)+' at '+fTime(s.Date):''}</p></div>${xbtn}</div>
+      ${list.length?`<p class="sm mu" style="margin-bottom:8px">Check people off as they arrive.</p>${list.map(r=>`<label class="mrow" style="cursor:pointer"><input type="checkbox" data-att="${r.id}" ${r.Attended?'checked':''} style="width:22px;height:22px;accent-color:var(--ok)" ${r.Status==='Cancelled'?'disabled':''}><div class="bd"><b>${esc(r.Name)}</b>${r.Guests?` <span class="pill">+${r.Guests}</span>`:''}${r.Status==='Cancelled'?' <span class="pill gr">Cancelled</span>':''}${r['2-Day Reminder Sent']?' <span class="pill ok">Reminded</span>':''}${r['Day-Of Reminder Sent']?' <span class="pill ok">Reminded today</span>':''}<p class="sm mu">${esc(r.Email)}</p></div></label>`).join('')}<p class="sm mu" style="margin-top:12px">Reminder emails go out on their own 2 days before and the morning of.</p>`:`<div class="empty">${I('users')}<p>No RSVPs yet.</p></div>`}`);
+    $$('[data-att]',md).forEach(c=>c.onchange=async()=>{try{await call({action:'admin',token:this.token,op:'save',kind:'rsvps',id:c.dataset.att,fields:{Attended:c.checked}});const r=this.d.rsvps.find(x=>x.id===c.dataset.att);r.Attended=c.checked}catch(e){c.checked=!c.checked;toast(e.message)}});
+  },
+  c_updates(){
+    const ups=this.d.posts.filter(p=>p.Kind==='Update'||p.Kind==='Spotlight');
+    this.bind=()=>{const f=$('#uf');const fi=$('input[type=file]',f);fi.onchange=()=>{$('span',fi.parentNode).textContent=fi.files[0]?'Photo added':'Add photo'};
+      $$('[name=kind]',f).forEach(r=>r.onchange=()=>{$('#uft').placeholder=f.kind.value==='Spotlight'?'Her name, for example Spotlight: Denise R.':'Title (optional)'});
+      f.onsubmit=async e=>{e.preventDefault();if(!f.body.value.trim())return showErr(f,'Write the message first.');const b=$('button[type=submit]',f);busy(b,1,'Posting...');try{const photo=await readPhoto(fi.files[0]);await this.op({op:'post',kind:f.kind.value,title:f.title.value,body:f.body.value,space:f.space.value,pinned:f.pinned.checked,photo},b,'Posted to the circle')}catch(err){busy(b,0)}};
+      $$('[data-pin]').forEach(b=>b.onclick=()=>{const p=this.d.posts.find(x=>x.id===b.dataset.pin);this.op({op:'save',kind:'posts',id:p.id,fields:{Pinned:!p.Pinned}},b,p.Pinned?'Unpinned':'Pinned')});
+      $$('[data-hide]').forEach(b=>b.onclick=()=>{const p=this.d.posts.find(x=>x.id===b.dataset.hide);this.op({op:'save',kind:'posts',id:p.id,fields:{Hidden:!p.Hidden}},b,p.Hidden?'Showing again':'Hidden from members')})};
+    return`<form class="card" id="uf" novalidate><h3 style="margin-bottom:12px">Post to the circle</h3>
+      <div class="chips" style="margin-bottom:14px"><label class="chip" style="display:flex;gap:6px;align-items:center"><input type="radio" name="kind" value="Update" checked style="accent-color:var(--pk)">Update or reminder</label><label class="chip" style="display:flex;gap:6px;align-items:center"><input type="radio" name="kind" value="Spotlight" style="accent-color:var(--pk)">Sister Spotlight</label></div>
+      <label class="f"><input class="in" id="uft" name="title" placeholder="Title (optional)" maxlength="120"></label><label class="f"><textarea class="in" name="body" placeholder="Write your message to the circle..." maxlength="4000"></textarea></label>
+      <div class="frow"><label class="f"><span>Who sees it</span><select class="in" name="space"><option>All Sisters</option><option>Survivors Corner</option></select></label><label class="chk" style="align-self:center"><input type="checkbox" name="pinned"><span>Pin to the top</span></label></div>
+      <div class="mbtns"><label class="btn gh sm" style="cursor:pointer">${I('cam')}<span>Add photo</span><input type="file" accept="image/*" class="sr"></label><button class="btn" type="submit">${I('send')}Post</button></div><p class="sm mu" style="margin-top:10px">Spotlights need the member's permission before you post them.</p></form>
+    <div class="card"><h3 style="margin-bottom:6px">Posted</h3>${ups.length?ups.map(p=>`<div class="mrow"><div class="bd">${p.Kind==='Spotlight'?'<span class="pill">Spotlight</span> ':''}${p.Pinned?'<span class="pill warn">Pinned</span> ':''}${p.Hidden?'<span class="pill gr">Hidden</span> ':''}${p.Space==='Survivors Corner'?'<span class="pill gr">Survivors Corner</span> ':''}<b>${esc(p.Title||'')}</b><p class="sm" style="white-space:pre-wrap;margin-top:4px">${esc(String(p.Body||'').slice(0,240))}</p><p class="sm mu">${ago(p['Posted At'])}</p></div><button class="btn xs gh" data-pin="${p.id}">${p.Pinned?'Unpin':'Pin'}</button><button class="btn xs gh" data-hide="${p.id}">${p.Hidden?'Show':'Hide'}</button></div>`).join(''):`<div class="empty">${I('mega')}<p>Nothing posted yet.</p></div>`}</div>`;
+  },
+  c_board(){
+    const ps=this.d.posts.filter(p=>p.Kind==='Post');
+    this.bind=()=>$$('[data-hide]').forEach(b=>b.onclick=()=>{const p=this.d.posts.find(x=>x.id===b.dataset.hide);this.op({op:'save',kind:'posts',id:p.id,fields:{Hidden:!p.Hidden}},b,p.Hidden?'Showing again':'Hidden from members')});
+    return`<div class="card"><div class="ch"><h3>Member posts</h3><span class="sm mu">Hide anything that does not keep the circle safe.</span></div>${ps.length?ps.map(p=>`<div class="mrow"><div class="bd"><b>${esc(p['Author Name']||'Member')}</b> ${p.Space==='Survivors Corner'?'<span class="pill gr">Survivors Corner</span>':''} ${p.Hidden?'<span class="pill bad">Hidden</span>':''}<p class="sm" style="white-space:pre-wrap;margin-top:4px">${esc(p.Body)}</p><p class="sm mu">${ago(p['Posted At'])} . ${p.Cheers||0} hearts</p></div><button class="btn xs ${p.Hidden?'gh':'red'}" data-hide="${p.id}">${p.Hidden?'Show again':'Hide'}</button></div>`).join(''):`<div class="empty">${I('chat')}<p>No member posts yet.</p></div>`}</div>`;
+  },
+  c_resources(){
+    const r=this.d.resources;
+    return`<div class="card"><div class="ch"><h3>Resources</h3><button class="btn sm" data-add="resources">${I('plus')}Add resource</button></div>${r.length?r.map(x=>`<div class="mrow"><span class="ic">${I('book')}</span><div class="bd"><b>${esc(x.Title)}</b> ${x.Active?'':'<span class="pill gr">Hidden</span>'}<p class="sm mu">${esc(x.Category||'')}${x.Link?' . '+esc(x.Link):''}</p></div><button class="btn xs" data-edit="resources:${x.id}">${I('edit')}Edit</button></div>`).join(''):`<div class="empty">${I('book')}<p>Add handouts and helpful links for members.</p></div>`}</div>`;
+  },
+  t_bags(){
+    const b=this.bagStats(),low=this.low();
+    const [nav,cur]=this.subnav([['deliveries','Deliveries'],['partners','Hospitals and partners'],['inventory','Inventory',low.length],['assembly','Packing days']]);
+    return`<div style="margin:24px 0 6px"><p class="kick">Care bags</p><h1 style="font-size:34px">Wright Beside You</h1><button class="btn sm gh" style="margin-top:10px" onclick="Importer.open()">${I('upload')}Upload data</button></div>
+    <div class="grid g4" style="margin:14px 0 0"><div class="stat pk"><span>Bags this year</span><b>${b.year.toLocaleString()}</b></div><div class="stat"><span>This month</span><b>${b.month}</b></div><div class="stat"><span>All time</span><b>${b.all.toLocaleString()}</b></div><div class="stat"><span>Active partners</span><b>${b.partners}</b></div></div>`+nav+this['b_'+cur]();
+  },
+  b_deliveries(){
+    const dl=this.d.deliveries,by={};dl.forEach(x=>{by[x.Partner||'Other']=(by[x.Partner||'Other']||0)+(+x.Bags||0)});
+    return`<div class="card"><div class="ch"><h3>Deliveries</h3><button class="btn sm" data-add="deliveries">${I('plus')}Log a delivery</button></div><p class="note">Log bag counts only. Never enter patient names or medical details. The hospital handles who receives each bag.</p>
+    ${dl.length?`<div class="tscroll"><table class="tbl stack"><thead><tr><th>Date</th><th>Delivered to</th><th>Bags</th><th>By</th><th></th></tr></thead><tbody>${dl.map(x=>`<tr><td data-l="Date">${fShort(x.Date)}</td><td data-l="To"><b>${esc(x.Partner||'')}</b>${x['Sponsored By']?`<br><span class="sm mu">Sponsored by ${esc(x['Sponsored By'])}</span>`:''}</td><td data-l="Bags"><b>${x.Bags||0}</b></td><td data-l="By">${esc(x['Delivered By']||'')}</td><td><button class="btn xs gh" data-edit="deliveries:${x.id}">${I('edit')}Edit</button></td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">${I('gift')}<p>No deliveries logged yet. Every delivery you log becomes a verified impact number.</p></div>`}</div>
+    ${Object.keys(by).length?`<div class="card"><h3 style="margin-bottom:10px">Bags by partner</h3>${Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([k,v])=>{const max=Math.max(...Object.values(by));return`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between"><span>${esc(k)}</span><b>${v}</b></div><div class="bar"><i style="width:${v/max*100}%"></i></div></div>`}).join('')}</div>`:''}`;
+  },
+  b_partners(){
+    const p=this.d.partners,cls={Active:'ok',Confirmed:'ok',Talking:'warn',Paused:'gr'};
+    return`<div class="card"><div class="ch"><h3>Hospitals and partners</h3><button class="btn sm" data-add="partners">${I('plus')}Add partner</button></div>${p.length?p.sort((a,b)=>OPT.pstatus.indexOf(a.Status)-OPT.pstatus.indexOf(b.Status)).map(x=>`<div class="mrow"><span class="ic">${I('castle')}</span><div class="bd"><b>${esc(x.Partner)}</b> <span class="pill ${cls[x.Status]||'gr'}">${esc(x.Status||'')}</span><p class="sm mu">${esc([x.Type,x['Contact Name'],x['Contact Phone']||x['Contact Email']].filter(Boolean).join(' . '))}</p></div><button class="btn xs" data-edit="partners:${x.id}">${I('edit')}Edit</button></div>`).join(''):`<div class="empty">${I('castle')}<p>Add the hospitals you are talking with, even early conversations.</p></div>`}</div>`;
+  },
+  b_inventory(){
+    const inv=this.d.inventory,can=inv.filter(i=>i['Per Bag']>0).length?Math.min(...inv.filter(i=>i['Per Bag']>0).map(i=>Math.floor((i['In Stock']||0)/i['Per Bag']))):0;
+    return`<div class="card"><div class="ch"><h3>What goes in each bag</h3><button class="btn sm" data-add="inventory">${I('plus')}Add item</button></div>${inv.length?`<p class="note">With what is on hand, you can pack <b>${can}</b> full ${can===1?'bag':'bags'}.</p><div class="tscroll"><table class="tbl stack"><thead><tr><th>Item</th><th>Per bag</th><th>In stock</th><th>Status</th><th></th></tr></thead><tbody>${inv.map(i=>{const lo=i['Reorder At']!=null&&(i['In Stock']||0)<=i['Reorder At'];return`<tr class="${lo?'lowst':''}"><td data-l="Item">${esc(i.Item)}${i.Notes?`<br><span class="sm mu">${esc(i.Notes)}</span>`:''}</td><td data-l="Per bag">${i['Per Bag']||0}</td><td data-l="In stock"><b>${i['In Stock']||0}</b></td><td data-l="Status">${lo?'<span class="pill bad">Reorder</span>':'<span class="pill ok">OK</span>'}</td><td><button class="btn xs gh" data-edit="inventory:${i.id}">${I('edit')}Update</button></td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty">${I('box')}<p>List the items that go in each care bag so you always know what to restock.</p></div>`}</div>`;
+  },
+  b_assembly(){
+    const a=this.d.assembly;
+    return`<div class="card"><div class="ch"><h3>Packing days</h3><button class="btn sm" data-add="assembly">${I('plus')}Plan a packing day</button></div>${a.length?a.map(x=>`<div class="mrow"><div class="dt" style="padding:8px 12px;min-width:70px"><span>${x.Date?fmt(x.Date,{month:'short'}):'TBD'}</span><b style="font-size:26px">${x.Date?fmt(x.Date,{day:'numeric'}):'?'}</b></div><div class="bd"><b>${esc(x.Title||'Packing day')}</b><p class="sm mu">${x.Date?fTime(x.Date):''}${x.Location?' . '+esc(x.Location):''}${x['Volunteers Needed']?` . ${x['Volunteers Needed']} volunteers needed`:''}</p>${x['Bags Goal']?`<p class="sm">${x['Bags Packed']||0} of ${x['Bags Goal']} bags packed</p><div class="bar"><i style="width:${Math.min(100,(x['Bags Packed']||0)/x['Bags Goal']*100)}%"></i></div>`:''}</div><button class="btn xs" data-edit="assembly:${x.id}">${I('edit')}Edit</button></div>`).join(''):`<div class="empty">${I('cal')}<p>Plan a packing day and invite volunteers.</p></div>`}</div>`;
+  },
+  t_spons(){
+    const [nav,cur]=this.subnav([['list','Committed sponsors'],['pipe','Pipeline',this.followUps().length]]);
+    const head=`<div style="margin:24px 0 4px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><p class="kick">Fight Wright</p><h1 style="font-size:34px">Sponsors</h1></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn gh" onclick="Importer.open()">${I('upload')}Upload spreadsheet</button>${cur==='pipe'?`<button class="btn" id="addpro">${I('plus')}Add prospect</button>`:`<button class="btn" data-add="sponsors">${I('plus')}Add sponsor</button>`}</div></div>`;
+    return head+nav+(cur==='pipe'?this.s_pipe():this.s_list());
+  },
+  s_pipe(){
+    const d=this.d,t=todayISO(),cols=['Prospect','Asked','Following up'];
+    const by=k=>d.sponsors.filter(s=>s.Stage===k).sort((a,b)=>String(a['Next Follow-up']||'9').localeCompare(String(b['Next Follow-up']||'9')));
+    const asked=d.sponsors.filter(s=>cols.includes(s.Stage)).reduce((n,s)=>n+(+s['Ask Amount']||0),0),won=d.sponsors.filter(s=>s.Stage==='Committed').length,lost=by('Declined');
+    this.bind=()=>{$('#addpro').onclick=()=>this.edit('sponsors',null,{Stage:'Prospect',Year:new Date().getFullYear()});
+      $$('[data-stage]').forEach(b=>b.onclick=()=>{const[id,st]=b.dataset.stage.split('|'),sp=d.sponsors.find(x=>x.id===id),f={Stage:st};
+        if(st==='Committed'){f.Commitment=sp.Commitment||sp['Ask Amount']||null;f['Payment Status']=sp['Payment Status']||'Pledged';f.Year=sp.Year||new Date().getFullYear()}
+        if(st==='Asked'||st==='Following up'){const n=new Date();n.setDate(n.getDate()+7);f['Next Follow-up']=n.toLocaleDateString('en-CA')}
+        this.op({op:'save',kind:'sponsors',id,fields:f},b,st==='Committed'?`${sp['Sponsor Name']} is in. Moved to Committed.`:`Moved to ${st}`)})};
+    const card=s=>{const due=s['Next Follow-up']&&s['Next Follow-up']<=t,nx={Prospect:'Asked',Asked:'Following up'}[s.Stage];
+      return`<div class="pcard"><div style="display:flex;justify-content:space-between;gap:8px"><b>${esc(s['Sponsor Name'])}</b>${s['Ask Amount']?`<b style="font-family:var(--serif)">${money(s['Ask Amount'])}</b>`:''}</div>
+      <p class="sm mu">${esc([s['Contact Name'],s['Contact Phone']||s['Contact Email']].filter(Boolean).join(' . '))}</p>
+      ${s['Next Follow-up']?`<p class="sm ${due?'due':'mu'}" style="margin-top:4px">${I('clock')} Follow up ${due&&s['Next Follow-up']<t?'was due ':''}${fShort(s['Next Follow-up'])}</p>`:''}
+      ${s.Notes?`<p class="sm" style="margin-top:6px">${esc(String(s.Notes).slice(0,140))}</p>`:''}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${nx?`<button class="btn xs gh" data-stage="${s.id}|${nx}">${nx==='Asked'?'I asked them':'Following up'}</button>`:''}<button class="btn xs ok" data-stage="${s.id}|Committed">${I('check')}They said yes</button><button class="btn xs gh" data-stage="${s.id}|Declined">Declined</button><button class="btn xs" data-edit="sponsors:${s.id}">${I('edit')}</button></div></div>`};
+    return`<div class="grid g4" style="margin-bottom:16px"><div class="stat pk"><span>Open asks</span><b>${money(asked)}</b></div><div class="stat"><span>In the pipeline</span><b>${d.sponsors.filter(s=>cols.includes(s.Stage)).length}</b></div><div class="stat"><span>Follow-ups due</span><b>${this.followUps().length}</b></div><div class="stat"><span>Said yes</span><b>${won}</b></div></div>
+    <div class="pipe">${cols.map(k=>{const l=by(k);return`<div class="pcol"><h4><span>${k}</span><span>${l.length}</span></h4>${l.map(card).join('')||`<p class="sm mu" style="padding:6px">${k==='Prospect'?'Add companies you want to ask.':'Nothing here.'}</p>`}</div>`}).join('')}</div>
+    ${lost.length?`<details class="card" style="margin-top:16px"><summary style="cursor:pointer"><b>Declined (${lost.length})</b> <span class="sm mu">Worth asking again next year</span></summary>${lost.map(s=>`<div class="mrow"><div class="bd"><b>${esc(s['Sponsor Name'])}</b><p class="sm mu">${esc(s.Notes||'')}</p></div><button class="btn xs gh" data-stage="${s.id}|Prospect">Try again</button></div>`).join('')}</details>`:''}`;
+  },
+  s_list(){
+    const d=this.d,yr=this.sy||'',st=this.ss||'',pg=this.sp||'',q=(this.sq||'').toLowerCase();
+    const years=[...new Set(d.sponsors.map(s=>s.Year).filter(Boolean))].sort((a,b)=>b-a);
+    const list=d.sponsors.filter(committed).filter(s=>(!yr||String(s.Year)===String(yr))&&(!st||(st==='thanks'?!s['Thank You Sent']:s['Payment Status']===st))&&(!pg||(s.Program||[]).includes(pg))&&(!q||String(s['Sponsor Name']).toLowerCase().includes(q))).sort((a,b)=>(b.Commitment||0)-(a.Commitment||0));
+    const s=this.sponStats(list);
+    this.bind=()=>{
+      $$('[data-letter]').forEach(b=>b.onclick=()=>this.letter(b.dataset.letter));
+      [['#sy','sy'],['#ss','ss'],['#spg','sp']].forEach(([id,k])=>{$(id).onchange=e=>{this[k]=e.target.value;this.render()}});
+      const sq=$('#sq');sq.oninput=()=>{this.sq=sq.value;const p=sq.selectionStart;this.render();const n=$('#sq');n.focus();n.setSelectionRange(p,p)};
+      $$('[data-ben]').forEach(c=>c.onchange=async()=>{const[id,i]=c.dataset.ben.split(':'),sp=d.sponsors.find(x=>x.id===id),prom=String(sp['Benefits Promised']||'').split('\n').map(x=>x.trim()).filter(Boolean);let done=String(sp['Benefits Delivered']||'').split('\n').map(x=>x.trim()).filter(Boolean);const item=prom[+i];done=c.checked?[...new Set([...done,item])]:done.filter(x=>x!==item);c.closest('.ben').classList.toggle('done',c.checked);try{await call({action:'admin',token:this.token,op:'save',kind:'sponsors',id,fields:{'Benefits Delivered':done.join('\n')}});sp['Benefits Delivered']=done.join('\n')}catch(e){c.checked=!c.checked;toast(e.message)}});
+      $$('[data-thx]').forEach(b=>b.onclick=()=>this.op({op:'save',kind:'sponsors',id:b.dataset.thx,fields:{'Thank You Sent':new Date().toLocaleDateString('en-CA')}},b,'Marked as thanked'));
+      $$('[data-paid]').forEach(b=>b.onclick=()=>{const sp=d.sponsors.find(x=>x.id===b.dataset.paid);this.op({op:'save',kind:'sponsors',id:sp.id,fields:{'Payment Status':'Paid','Amount Received':sp.Commitment||sp['Amount Received']||0}},b,'Marked as paid')});
+    };
+    const payCls={Paid:'ok','In-kind':'ok','Partially paid':'warn',Invoiced:'warn',Pledged:'gr',Overdue:'bad'};
+    return`<div class="grid g4" style="margin-bottom:16px"><div class="stat pk"><span>Pledged</span><b>${money(s.committed)}</b></div><div class="stat"><span>Received</span><b>${money(s.received)}</b></div><div class="stat"><span>Still owed</span><b>${money(s.owed)}</b></div><div class="stat"><span>Need a thank-you</span><b>${s.thanks}</b></div></div>
+    <div class="toolbar"><input class="in" id="sq" placeholder="Search sponsors" value="${esc(this.sq||'')}"><select class="in" id="sy"><option value="">All years</option>${years.map(y=>`<option ${String(yr)===String(y)?'selected':''}>${y}</option>`).join('')}</select><select class="in" id="ss"><option value="">Any status</option>${OPT.pay.map(o=>`<option ${st===o?'selected':''}>${o}</option>`).join('')}<option value="thanks" ${st==='thanks'?'selected':''}>Not thanked yet</option></select><select class="in" id="spg"><option value="">All programs</option>${OPT.prog.map(o=>`<option ${pg===o?'selected':''}>${o}</option>`).join('')}</select></div>
+    ${list.length?list.map(sp=>{const prom=String(sp['Benefits Promised']||'').split('\n').map(x=>x.trim()).filter(Boolean),done=String(sp['Benefits Delivered']||'').split('\n').map(x=>x.trim());const owed=Math.max(0,(+sp.Commitment||0)-recv(sp));
+      return`<div class="spc"><div class="hd">${sp.Logo?`<img class="logo" src="${esc(sp.Logo)}" alt="">`:`<span class="logo">${esc(ini(sp['Sponsor Name']))}</span>`}<div style="flex:1;min-width:0"><b style="font-size:16.5px">${esc(sp['Sponsor Name'])}</b> ${sp.Tier?`<span class="pill">${esc(sp.Tier)}</span>`:''} ${sp['Payment Status']?`<span class="pill ${payCls[sp['Payment Status']]||'gr'}">${esc(sp['Payment Status'])}</span>`:''}<p class="sm mu">${esc([(sp.Program||[]).join(', '),sp.Year,sp['Contact Name']].filter(Boolean).join(' . '))}</p></div><div style="text-align:right"><b style="font-family:var(--serif);font-size:22px">${money(sp.Commitment)}</b>${owed?`<p class="sm flag">${money(owed)} owed</p>`:sp.Commitment?'<p class="sm" style="color:var(--ok);font-weight:600">Paid in full</p>':''}</div></div>
+      ${prom.length?`<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--ln)"><p class="sm b" style="margin-bottom:4px">What we promised (${prom.filter(x=>done.includes(x)).length} of ${prom.length} done)</p>${prom.map((x,i)=>`<label class="ben ${done.includes(x)?'done':''}"><input type="checkbox" data-ben="${sp.id}:${i}" ${done.includes(x)?'checked':''}><span>${esc(x)}</span></label>`).join('')}</div>`:''}
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center">${sp['Thank You Sent']?`<span class="pill ok">${I('check')}Thanked ${fShort(sp['Thank You Sent'])}</span><button class="btn xs gh" data-letter="${sp.id}">${I('file')}Letter</button>`:`<button class="btn xs" data-letter="${sp.id}">${I('heart')}Thank-you letter</button><button class="lk sm" data-thx="${sp.id}">Already thanked</button>`}${owed&&sp['Payment Status']!=='In-kind'?`<button class="btn xs gh" data-paid="${sp.id}">${I('dollar')}Mark paid</button>`:''}${sp['Renewal Date']?`<span class="sm mu">Renew ${fShort(sp['Renewal Date'])}</span>`:''}<button class="btn xs" style="margin-left:auto" data-edit="sponsors:${sp.id}">${I('edit')}Edit</button></div></div>`}).join('')
+    :`<div class="card"><div class="empty">${I('dollar')}<p>${d.sponsors.length?'No sponsors match these filters.':'No sponsors yet. Import the spreadsheet or add them one at a time.'}</p></div></div>`}`;
+  },
+  t_access(){
+    const a=this.d.admins;
+    this.bind=()=>{$('#addad').onsubmit=async e=>{e.preventDefault();const f=e.target;try{const r=await this.op({op:'addAdmin',name:f.name.value,email:f.email.value,phone:f.phone.value},$('button',f));this.linkModal(r.link,f.name.value,f.phone.value)}catch(err){}};
+      $$('[data-al]').forEach(b=>b.onclick=async()=>{const x=a.find(y=>y.id===b.dataset.al);try{const r=await this.op({op:'adminLink',id:x.id},b);this.linkModal(r.link,x.name,x.phone)}catch(e){}});
+      $$('[data-aa]').forEach(b=>b.onclick=()=>{const x=a.find(y=>y.id===b.dataset.aa);this.op({op:'adminActive',id:x.id,active:!x.active},b,x.active?'Access removed':'Access restored')})};
+    return`<div style="margin:24px 0 14px"><p class="kick">Full staff only</p><h1 style="font-size:34px">Program admin access</h1><p class="mu">Program admins can only see Sister Circle, Wright Beside You and Sponsors. They never see walk data or the staff console.</p></div>
+    <form class="card" id="addad"><h3 style="margin-bottom:12px">Give someone access</h3><div class="frow"><label class="f"><span>Name</span><input class="in" name="name" required></label><label class="f"><span>Email</span><input class="in" name="email" type="email" required></label></div><label class="f"><span>Mobile (to text the setup link)</span><input class="in" name="phone" type="tel"></label><button class="btn dk" type="submit">Create setup link</button></form>
+    <div class="card"><h3 style="margin-bottom:6px">People with access</h3>${a.length?a.map(x=>`<div class="mrow"><div class="bd"><b>${esc(x.name)}</b> ${x.active?(x.ready?'<span class="pill ok">Active</span>':'<span class="pill warn">Has not set password</span>'):'<span class="pill gr">Removed</span>'}<p class="sm mu">${esc(x.email)}${x.last?' . last in '+ago(x.last):''}</p></div>${x.active?`<button class="btn xs gh" data-al="${x.id}">${I('link')}New setup link</button>`:''}<button class="btn xs ${x.active?'red':'gh'}" data-aa="${x.id}">${x.active?'Remove':'Restore'}</button></div>`).join(''):`<div class="empty">${I('lock')}<p>No program admins yet. Add Yolanda above.</p></div>`}</div>`;
+  },
+  letter(id){
+    const sp=this.d.sponsors.find(x=>x.id===id),first=String(sp['Contact Name']||'').trim().split(/\s+/)[0];
+    const progs=(sp.Program||[]).filter(p=>p!=='General Support'),amt=+sp.Commitment||+sp['Amount Received']||0,inkind=sp['Payment Status']==='In-kind';
+    const done=String(sp['Benefits Delivered']||'').split('\n').map(x=>x.trim()).filter(Boolean);
+    const what=progs.length?`your ${sp.Year||new Date().getFullYear()} sponsorship of ${progs.join(' and ').replace('Walk & Festival','our Breast Cancer Walk and Festival').replace('Wright Beside You','Wright Beside You care bags').replace('Sister Circle','Sister Circle')}`:`your ${sp.Year||new Date().getFullYear()} sponsorship`;
+    const body=`Dear ${first||'Friends at '+sp['Sponsor Name']},
+
+On behalf of everyone at Fight Wright Foundation, thank you for ${what}${sp.Tier&&!/in-kind/i.test(sp.Tier)?` at the ${sp.Tier} level`:''}${amt&&!inkind?`, a generous gift of ${money(amt)}`:''}${inkind?', including your generous in-kind donation':''}.
+
+Your support helps us provide access to mammograms, transportation, treatment-related needs and ongoing support for breast cancer patients, survivors and their families in our community. Because of partners like ${sp['Sponsor Name']}, more women get screened early, and no one has to walk this road alone.${done.length?`
+
+We were proud to recognize your support through: ${done.join(', ')}.`:''}
+
+We are grateful to have you in the fight with us, and we look forward to partnering again.`;
+    const nm=this.name||'Yolanda';
+    const md=modal(`<div class="mh noprint"><h3>Thank-you letter</h3>${xbtn}</div>
+      <div class="noprint"><label class="f"><span>Letter (edit anything)</span><textarea class="in" id="lt" style="min-height:260px">${esc(body)}</textarea></label>
+      <div class="frow"><label class="f"><span>Signed by</span><select class="in" id="ls"><option value="${esc(ORG.signer)}|${esc(ORG.title)}">${esc(ORG.signer)}, ${esc(ORG.title)}</option><option value="${esc(nm)}|Fight Wright Foundation">${esc(nm)}</option></select></label>
+      <label class="chk" style="align-self:center"><input type="checkbox" id="lq"><span>Add: no goods or services were provided in exchange</span></label></div>
+      <p class="sm mu" style="margin:-4px 0 14px">Only check that box if they received nothing in return (no logo, booth or ads). Ask your accountant if you are unsure.</p></div>
+      <div class="letter" id="printme"></div>
+      <div class="mbtns noprint" style="margin-top:14px"><button class="btn" id="lp">${I('file')}Print or save as PDF</button>${sp['Contact Email']?`<button class="btn gh" id="le">${I('send')}Email it to ${esc(first||sp['Contact Email'])}</button>`:''}<button class="btn gh" id="lc">${I('copy')}Copy text</button></div>
+      <p class="sm mu noprint" style="margin-top:10px">Printing, emailing or copying marks ${esc(sp['Sponsor Name'])} as thanked today.</p>`,true);
+    const paint=()=>{const[sg,ti]=$('#ls',md).value.split('|');const q=$('#lq',md).checked;
+      $('#printme',md).innerHTML=`<div class="lh"><img src="${LOGO}" alt="Fight Wright Foundation" style="filter:brightness(0)"><div class="org"><b>${ORG.legal}</b><br>${ORG.addr1}<br>${ORG.addr2}<br>${ORG.phone} . ${ORG.email}</div></div>
+      <p>${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</p><p>${esc(sp['Sponsor Name'])}${sp['Contact Name']?'\nAttn: '+esc(sp['Contact Name']):''}</p>
+      <p>${esc($('#lt',md).value)}</p><p>With gratitude,</p><p style="margin-top:30px"><b>${esc(sg)}</b>\n${esc(ti==='Fight Wright Foundation'?ORG.legal:ti+', '+ORG.legal)}</p>
+      <div class="lf">${ORG.legal} is a 501(c)(3) nonprofit organization, EIN ${ORG.ein}. ${q?'No goods or services were provided in exchange for this contribution. ':''}Please keep this letter for your tax records. ${ORG.web}</div>`};
+    paint();['#lt','#ls','#lq'].forEach(k=>$(k,md).addEventListener('input',paint));$('#lq',md).onchange=paint;$('#ls',md).onchange=paint;
+    const mark=()=>{if(!sp['Thank You Sent'])call({action:'admin',token:this.token,op:'save',kind:'sponsors',id,fields:{'Thank You Sent':todayISO()}}).then(()=>{sp['Thank You Sent']=todayISO()}).catch(()=>{})};
+    const plain=()=>{const[sg,ti]=$('#ls',md).value.split('|');return`${$('#lt',md).value}\n\nWith gratitude,\n${sg}\n${ti==='Fight Wright Foundation'?ORG.legal:ti+', '+ORG.legal}\n\n${ORG.legal} is a 501(c)(3) nonprofit organization, EIN ${ORG.ein}.${$('#lq',md).checked?' No goods or services were provided in exchange for this contribution.':''} Please keep this letter for your tax records.`};
+    $('#lp',md).onclick=()=>{mark();window.print()};
+    const le=$('#le',md);if(le)le.onclick=()=>{mark();location.href=`mailto:${sp['Contact Email']}?subject=${encodeURIComponent('Thank you from Fight Wright Foundation')}&body=${encodeURIComponent(plain())}`};
+    $('#lc',md).onclick=()=>{mark();navigator.clipboard.writeText(plain()).then(()=>toast('Letter copied'))};
+    md.closest('.ov').addEventListener('click',e=>{if(e.target.closest('[data-close]'))this.render()});
+  },
+  t_report(){
+    const per=this.rp||'month',n=new Date(),y=n.getFullYear(),m=n.getMonth();
+    const P={month:[new Date(y,m,1),new Date(y,m+1,1),n.toLocaleDateString('en-US',{month:'long',year:'numeric'})],last:[new Date(y,m-1,1),new Date(y,m,1),new Date(y,m-1,1).toLocaleDateString('en-US',{month:'long',year:'numeric'})],quarter:[new Date(y,Math.floor(m/3)*3,1),new Date(y,Math.floor(m/3)*3+3,1),`Q${Math.floor(m/3)+1} ${y}`],year:[new Date(y,0,1),new Date(y+1,0,1),`${y}`],lastyear:[new Date(y-1,0,1),new Date(y,0,1),`${y-1}`]};
+    const [a,b,label]=P[per],inP=v=>{if(!v)return false;const t=String(v).length===10?new Date(v+'T12:00:00'):new Date(v);return t>=a&&t<b};
+    const d=this.d,yrs=new Set();for(let q=a.getFullYear();q<=new Date(b-1).getFullYear();q++)yrs.add(q);
+    const mem=d.members.filter(x=>x.Status==='Approved'),newM=mem.filter(x=>inP(x['Approved At']||x['Joined At']));
+    const held=d.sessions.filter(s=>s.Status!=='Cancelled'&&inP(s.Date)&&new Date(s.Date)<n),hid=new Set(held.map(s=>s.id));
+    const rs=d.rsvps.filter(r=>(r.Session||[]).some(x=>hid.has(x))),att=rs.filter(r=>r.Attended),useAtt=att.length>0,cnt=(useAtt?att:rs.filter(r=>r.Status!=='Cancelled')).reduce((q,r)=>q+1+(+r.Guests||0),0);
+    const dl=d.deliveries.filter(x=>inP(x.Date)),bags=dl.reduce((q,x)=>q+(+x.Bags||0),0),served=new Set(dl.map(x=>x.Partner).filter(Boolean));
+    const pk=d.assembly.filter(x=>inP(x.Date)),packed=pk.reduce((q,x)=>q+(+x['Bags Packed']||0),0);
+    const sp=d.sponsors.filter(committed).filter(x=>yrs.has(+x.Year)),st=this.sponStats(sp);
+    const lines=[`Fight Wright Foundation impact report: ${label}`,'',`Sister Circle`,`- ${mem.length} members (${newM.length} new)`,`- ${held.length} ${held.length===1?'gathering':'gatherings'} held`,`- ${cnt} ${useAtt?'attendees':'RSVPs'}`,'',`Wright Beside You`,`- ${bags} care bags delivered`,`- ${served.size} hospital and community ${served.size===1?'partner':'partners'} served`,...(pk.length?[`- ${pk.length} packing ${pk.length===1?'day':'days'}, ${packed} bags packed`]:[]),'',`Sponsorships (${[...yrs].join(', ')})`,`- ${st.count} sponsors`,`- ${money(st.committed)} pledged, ${money(st.received)} received`];
+    this.bind=()=>{$('#rp').onchange=e=>{this.rp=e.target.value;this.render()};$('#rpp').onclick=()=>window.print();$('#rpc').onclick=()=>navigator.clipboard.writeText(lines.join('\n')).then(()=>toast('Summary copied'))};
+    return`<div class="noprint" style="margin:24px 0 14px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><p class="kick">Reports</p><h1 style="font-size:34px">Impact report</h1><p class="mu">For Dr. Von, grant applications and the Wright Report. Built from what you already log.</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><select class="in" id="rp" style="width:auto">${[['month','This month'],['last','Last month'],['quarter','This quarter'],['year','This year'],['lastyear','Last year']].map(o=>`<option value="${o[0]}" ${per===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select><button class="btn" id="rpp">${I('file')}Print or save PDF</button><button class="btn gh" id="rpc">${I('copy')}Copy summary</button></div></div>
+    <div class="rep" id="printme"><div class="rh"><img src="${LOGO}" alt="Fight Wright Foundation" style="filter:brightness(0)"><div style="text-align:right"><p class="kick">Impact report</p><h2>${esc(label)}</h2></div></div>
+    <h4>Sister Circle</h4><div class="big"><div><span>Members</span><b>${mem.length}</b></div><div><span>New members</span><b>${newM.length}</b></div><div><span>Gatherings held</span><b>${held.length}</b></div><div><span>${useAtt?'Attendees':'RSVPs'}</span><b>${cnt}</b></div></div>
+    <h4>Wright Beside You care bags</h4><div class="big"><div><span>Bags delivered</span><b>${bags.toLocaleString()}</b></div><div><span>Partners served</span><b>${served.size}</b></div><div><span>Packing days</span><b>${pk.length}</b></div><div><span>Bags packed</span><b>${packed.toLocaleString()}</b></div></div>
+    ${served.size?`<p class="sm mu" style="margin-top:8px">Delivered to ${esc([...served].join(', '))}</p>`:''}
+    <h4>Sponsorships (${[...yrs].join(', ')})</h4><div class="big"><div><span>Sponsors</span><b>${st.count}</b></div><div><span>Pledged</span><b>${money(st.committed)}</b></div><div><span>Received</span><b>${money(st.received)}</b></div><div><span>Still owed</span><b>${money(st.owed)}</b></div></div>
+    <p class="sm mu" style="margin-top:20px;border-top:1px solid var(--ln);padding-top:10px">Counts come from records logged in the Fight Wright Programs admin. ${useAtt?'':'Attendance was not checked off, so RSVPs are shown. '}Generated ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}. ${ORG.legal}, EIN ${ORG.ein}.</p></div>`;
+  },
+  linkModal(link,name,ph){const first=String(name||'').split(' ')[0];modal(`<div class="mh"><h3>Setup link for ${esc(first)}</h3>${xbtn}</div>${linkBox(link,`Send this to ${esc(first)}. It works for 14 days. She opens it, creates a password, and lands in her Programs admin.`,ph,`Hi ${first}, here is your link to set up your Fight Wright Programs admin (Sister Circle, Wright Beside You, Sponsors): ${link}`)}`)},
+  edit(kind,id,preset){
+    const sc=SCHEMA[kind],r=id?this.d[kind].find(x=>x.id===id):{...(preset||{})};
+    const val=(f)=>{let v=r[f[0]];if(v==null&&!id&&f[3]!=null&&f[1]!=='select'&&f[1]!=='multi')v=f[3];return v};
+    const toLocal=v=>{if(!v)return'';const d=new Date(v),p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`};
+    const partners=this.d.partners.map(p=>p.Partner).filter(Boolean);
+    const input=f=>{const [k,t,l,o]=f,v=val(f),n=`name="${esc(k)}"`;
+      if(t==='area')return`<label class="f"><span>${l}</span><textarea class="in" ${n}>${esc(v||'')}</textarea></label>`;
+      if(t==='check')return`<label class="chk"><input type="checkbox" ${n} ${v||(!id&&k==='Active')?'checked':''}><span>${l}</span></label>`;
+      if(t==='select')return`<label class="f"><span>${l}</span><select class="in" ${n}><option value="">Choose</option>${[...new Set([...(o||[]),...(v?[v]:[])])].map(x=>`<option ${v===x?'selected':''}>${esc(x)}</option>`).join('')}</select></label>`;
+      if(t==='multi')return`<div class="f" style="margin-bottom:14px"><span class="b sm" style="display:block;margin-bottom:6px">${l}</span><div class="chips" data-multi="${esc(k)}">${o.map(x=>`<button type="button" class="chip" aria-pressed="${(v||[]).includes(x)}">${esc(x)}</button>`).join('')}</div></div>`;
+      if(t==='partner')return`<label class="f"><span>${l}</span><input class="in" ${n} list="plist" value="${esc(v||'')}"><datalist id="plist">${partners.map(p=>`<option value="${esc(p)}">`).join('')}</datalist></label>`;
+      const ty={datetime:'datetime-local',date:'date',money:'number',number:'number',email:'email',tel:'tel',url:'url'}[t]||'text';
+      const vv=t==='datetime'?toLocal(v):(v??'');
+      return`<label class="f"><span>${l}</span><input class="in" type="${ty}" ${n} value="${esc(vv)}" ${t==='money'?'step="0.01" min="0" inputmode="decimal"':''}${t==='number'?'step="1" min="0" inputmode="numeric"':''}></label>`};
+    const md=modal(`<div class="mh"><h3>${id?'Edit '+sc.one:'Add '+sc.one}</h3>${xbtn}</div><form id="ef" novalidate>${sc.fields.map(input).join('')}
+      ${kind==='sponsors'?`<label class="f"><span>Logo (optional)</span><input class="in" type="file" accept="image/*" name="__logo"></label>`:''}
+      <div class="mbtns"><button class="btn" type="submit">${id?'Save changes':'Add '+sc.one}</button>${id&&['sessions','resources','partners','deliveries','inventory','assembly','sponsors'].includes(kind)?`<button class="btn red" type="button" id="del">${I('trash')}Delete</button>`:''}</div></form>`);
+    $$('[data-multi] .chip',md).forEach(c=>c.onclick=()=>c.setAttribute('aria-pressed',c.getAttribute('aria-pressed')!=='true'));
+    const f=$('#ef',md);
+    f.onsubmit=async e=>{e.preventDefault();const fields={};
+      for(const [k,t] of sc.fields){if(t==='multi'){fields[k]=$$(`[data-multi="${CSS.escape(k)}"] .chip[aria-pressed=true]`,md).map(c=>c.textContent);continue}const el=f.elements[k];if(!el)continue;
+        fields[k]=t==='check'?el.checked:t==='datetime'?(el.value?new Date(el.value).toISOString():null):el.value}
+      const first=sc.fields[0][0];if(!String(fields[first]||'').trim()&&sc.fields[0][1]==='text')return showErr(f,`Please fill in ${sc.fields[0][2].toLowerCase()}.`);
+      if(kind==='deliveries'&&!(+fields.Bags>0))return showErr(f,'How many bags were delivered?');
+      let logo=null;try{logo=kind==='sponsors'?await readPhoto(f.__logo.files[0]):null}catch(err){return showErr(f,err.message)}
+      try{await this.op({op:'save',kind,id,fields,logo},$('button[type=submit]',f),id?'Saved':'Added')}catch(err){showErr(f,err.message)}};
+    const del=$('#del',md);if(del)del.onclick=()=>{if(confirm(`Delete this ${sc.one}? This cannot be undone.`))this.op({op:'delete',kind,id},del,'Deleted').catch(()=>{})};
+  }
+};
+function linkBox(link,text,ph,sms){return`<div class="note" style="margin-top:14px"><p class="sm" style="margin-bottom:8px">${text}</p><div class="copy"><input class="in" readonly value="${esc(link)}" onclick="this.select()"><button class="btn sm" type="button" onclick="navigator.clipboard.writeText('${esc(link)}').then(()=>toast('Link copied'))">${I('copy')}Copy</button></div>
+  <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">${ph?`<a class="btn xs gh" href="sms:${esc(String(ph).replace(/[^\d+]/g,''))}?&body=${encodeURIComponent(sms)}">${I('chat')}Text it</a>`:''}<a class="btn xs gh" href="mailto:?subject=${encodeURIComponent('Your Fight Wright link')}&body=${encodeURIComponent(sms)}">${I('send')}Email it</a></div></div>`}
+function adminSetupView(code){
+  Admin.loginView();
+  const box=$('.auth .box');
+  box.innerHTML=`<form id="fas" novalidate><h2 style="margin-bottom:6px">Create your password</h2><p class="mu" style="margin-bottom:18px" id="asw">Checking your link...</p><label class="f"><span>Password</span><input class="in" name="password" type="password" autocomplete="new-password"><small>At least 8 characters.</small></label><button class="btn wide dk" type="submit">Save and open my admin</button></form>`;
+  const f=$('#fas');
+  call({action:'asetup',code}).then(r=>{$('#asw').textContent=`Hi ${String(r.name||'').split(' ')[0]}. Choose a password for ${r.email}.`}).catch(e=>{$('#asw').textContent='';showErr(f,e.message)});
+  f.onsubmit=async e=>{e.preventDefault();const b=$('button',f);busy(b,1);try{const r=await call({action:'asetup',code,password:f.password.value});store.set('fwf_padmin',r.token);Admin.token=r.token;history.replaceState(null,'',location.pathname+'#admin');Admin.start()}catch(err){busy(b,0);showErr(f,err.message)}};
+}
+
+/* =================== SMART UPLOAD (Excel or CSV, read in the browser) ===================
+   Reads every sheet, figures out which list each one belongs to from its name and column
+   headers, matches the columns, and shows everything for review before anything is saved. */
+const KINDS={
+  sponsors:{label:'Sponsors',key:'Sponsor Name',words:/sponsor|pledge|commit|tier|level|benefit|package|donor|underwrit/i,need:'a sponsor name',
+    t:[['Sponsor Name','Sponsor name',/sponsor|company|business|organi[sz]ation|donor|^name$/i],['Stage','Stage',/stage|pipeline/i],['Tier','Level',/tier|level|package/i],['Ask Amount','Amount we asked for',/\bask|request/i],['Commitment','Amount pledged',/amount|commit|pledge|value|total|gift|\$/i],['Amount Received','Amount received',/received|paid amount|collected|amt paid/i],['Payment Status','Payment status',/status|paid\??$|payment/i],['Program','What they sponsor',/program|event|sponsor(ing|ed)? (what|for)|purpose|for$/i],['Year','Year',/^year$/i],['Contact Name','Contact person',/contact|rep\b|person|poc|liaison/i],['Contact Email','Contact email',/e-?mail/i],['Contact Phone','Contact phone',/phone|mobile|cell/i],['Website','Website',/web|url|site/i],['Benefits Promised','Benefits promised',/benefit|perk|promis|deliverable|recognition|includes/i],['Thank You Sent','Thank-you sent',/thank/i],['Renewal Date','Renewal date',/renew/i],['Next Follow-up','Follow up on',/follow/i],['Notes','Notes',/note|comment/i]]},
+  partners:{label:'Hospitals and partners',key:'Partner',words:/hospital|partner|clinic|cancer cent|facilit/i,need:'a partner name',
+    t:[['Partner','Hospital or partner',/hospital|partner|clinic|facilit|organi[sz]ation|center|^name$/i],['Type','Type',/type|category|kind/i],['Status','Status',/status|stage/i],['Contact Name','Contact',/contact|person|rep\b|liaison|poc|nurse|navigator/i],['Contact Email','Email',/e-?mail/i],['Contact Phone','Phone',/phone|cell|mobile/i],['Address','Address',/address|street|city|location/i],['Notes','Notes',/note|comment/i]]},
+  deliveries:{label:'Care bag deliveries',key:'Bags',words:/deliver|drop.?off|distribut|bags? (given|delivered)/i,need:'a number of bags',
+    t:[['Date','Date',/date|when|day/i],['Partner','Delivered to',/hospital|partner|deliver(ed)? to|facilit|where|site|location|recipient org/i],['Bags','Bags',/bags?|qty|quantity|count|number|#|total|packages/i],['Delivered By','Delivered by',/by\b|volunteer|driver|who/i],['Sponsored By','Sponsored by',/sponsor/i],['Notes','Notes',/note|comment/i]]},
+  inventory:{label:'Care bag inventory',key:'Item',words:/inventory|stock|on hand|supplies|reorder|per bag/i,need:'an item name',
+    t:[['Item','Item',/item|product|supply|description|^name$/i],['Per Bag','Per bag',/per bag|each bag|per/i],['In Stock','In stock',/stock|on hand|qty|quantity|have|count|inventory/i],['Reorder At','Reorder at',/reorder|minimum|min\b/i],['Notes','Notes',/note|vendor|where|brand|source|store/i]]},
+  members:{label:'Sister Circle members',key:'Email',words:/member|survivor|caregiver|sister|circle|attendee|roster/i,need:'a name and email',
+    t:[['Name','Name',/name/i],['Email','Email',/e-?mail/i],['Phone','Phone',/phone|cell|mobile/i],['Member Type','Member type',/type|role|survivor|category|relationship/i],['About Me','About',/about|bio|comment|note/i]]},
+  sessions:{label:'Sister Circle gatherings',key:'Date',words:/topic|speaker|gathering|session|meeting/i,need:'a date',
+    t:[['Date','Date',/date|when/i],['Topic','Topic',/topic|theme|title|subject/i],['Speaker','Speaker',/speaker|guest|presenter|facilitator/i],['Location','Location',/location|where|place|venue/i],['Recap','Recap or notes',/recap|note|summary/i]]},
+  assembly:{label:'Packing days',key:'Date',words:/packing|assembl/i,need:'a date',
+    t:[['Title','Name',/name|title|event/i],['Date','Date',/date|when/i],['Location','Location',/location|where|place/i],['Volunteers Needed','Volunteers needed',/volunteer/i],['Bags Goal','Bags goal',/goal|target/i],['Bags Packed','Bags packed',/packed|completed|done/i],['Notes','Notes',/note/i]]}
+};
+const NUMF=new Set(['Commitment','Amount Received','Ask Amount','Year','Bags','Per Bag','In Stock','Reorder At','Volunteers Needed','Bags Goal','Bags Packed']);
+const DATEF=new Set(['Thank You Sent','Renewal Date','Next Follow-up']);
+function guessMap(kind,head){const used=new Set();return head.map(h=>{if(!h)return'';const t=KINDS[kind].t.find(([f,,re])=>re.test(h)&&!used.has(f));if(t){used.add(t[0]);return t[0]}return''})}
+function detect(name,head){
+  let best='',score=0;
+  for(const [k,K] of Object.entries(KINDS)){
+    const m=guessMap(k,head).filter(Boolean);let sc=m.length+(K.words.test(name)?4:0)+(K.words.test(head.join(' '))?2:0);
+    if(!m.includes(k==='members'?'Email':K.key))sc-=3;
+    if(sc>score){score=sc;best=k}
+  }
+  return score>=3?best:'';
+}
+function normalize(kind,f,v){
+  if(v==null||String(v).trim()==='')return undefined;
+  if(NUMF.has(f)){const n=typeof v==='number'?v:Number(String(v).replace(/[$,\s]/g,''));return Number.isFinite(n)?n:undefined}
+  if(DATEF.has(f)||(f==='Date'&&kind==='deliveries'))return toISODate(v)||undefined;
+  if(f==='Date')return toISODateTime(v,kind==='sessions'?18:10,kind==='sessions'?30:0)||undefined;
+  const s=String(v).trim(),l=s.toLowerCase();
+  if(f==='Benefits Promised')return s.split(/\n|;|•/).map(x=>x.trim()).filter(Boolean).join('\n');
+  if(f==='Payment Status')return/partial/.test(l)?'Partially paid':/overdue|late/.test(l)?'Overdue':/invoice/.test(l)?'Invoiced':/in.?kind/.test(l)?'In-kind':/paid|yes|received|complete/.test(l)?'Paid':/pledge|commit|pending|no/.test(l)?'Pledged':s;
+  if(f==='Stage')return/declin|no\b|pass/.test(l)?'Declined':/follow/.test(l)?'Following up':/ask|pitch|sent/.test(l)?'Asked':/prospect|idea|lead/.test(l)?'Prospect':'Committed';
+  if(f==='Program'){const p=[];if(/walk|festival|5k/.test(l))p.push('Walk & Festival');if(/bag|beside|care/.test(l))p.push('Wright Beside You');if(/sister|circle/.test(l))p.push('Sister Circle');if(/gala/.test(l))p.push('Gala');return p.length?p:['General Support']}
+  if(f==='Member Type')return/survivor/.test(l)?'Survivor':/treat|patient|fight/.test(l)?'In Treatment':/care/.test(l)?'Caregiver':/famil|mother|daughter|sister|husband|son|spouse|partner/.test(l)?'Family':'Supporter';
+  if(f==='Status'&&kind==='partners')return/active|current/.test(l)?'Active':/confirm|yes/.test(l)?'Confirmed':/pause|hold|inactive/.test(l)?'Paused':'Talking';
+  if(f==='Type'&&kind==='partners')return/cancer/.test(l)?'Cancer center':/clinic/.test(l)?'Clinic':/hospital|medical cent/.test(l)?'Hospital':'Community partner';
+  return s;
+}
+function toISODate(v){if(typeof v==='number'&&v>20000&&v<80000)return new Date(Math.round((v-25569)*864e5)).toISOString().slice(0,10);const s=String(v).trim();let m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);if(m){const y=m[3].length===2?'20'+m[3]:m[3];return`${y}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`}const d=new Date(s);return isNaN(d)?null:d.toLocaleDateString('en-CA')}
+function toISODateTime(v,h,mi){if(typeof v==='number'&&v>20000&&v<80000){const whole=Math.floor(v),frac=v-whole,d=new Date(Math.round((whole-25569)*864e5));const loc=new Date(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),h,mi);if(frac>0){const mins=Math.round(frac*1440);loc.setHours(Math.floor(mins/60),mins%60)}return loc.toISOString()}
+  const s=String(v).trim(),dOnly=toISODate(s);if(!dOnly)return null;const tm=s.match(/(\d{1,2}):(\d{2})\s*(am|pm)?/i);const [Y,M,D]=dOnly.split('-').map(Number);const loc=new Date(Y,M-1,D,h,mi);if(tm){let hh=+tm[1];if(/pm/i.test(tm[3]||'')&&hh<12)hh+=12;if(/am/i.test(tm[3]||'')&&hh===12)hh=0;loc.setHours(hh,+tm[2])}return loc.toISOString()}
+const Importer={
+  sheets:[],
+  open(){
+    const md=modal(`<div class="mh"><h3>Upload your data</h3>${xbtn}</div>
+      <div class="drop" id="drop"><p class="b" style="margin-bottom:6px">Drop in any spreadsheet</p><p class="sm mu" style="margin-bottom:14px">Sponsors, hospitals, care bag deliveries, inventory, Sister Circle members or gatherings. One file or many, one tab or many. I read each tab, figure out where it belongs and match the columns. Nothing is saved until you check it and tap Import.</p>
+      <label class="btn" style="cursor:pointer">${I('upload')}<span>Choose files</span><input type="file" multiple accept=".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="sr" id="imf"></label></div><div id="imo" style="margin-top:16px"></div>`,true);
+    const go=async files=>{if(!files.length)return;$('#imo').innerHTML='<p class="mu">Reading...</p>';this.sheets=[];const errs=[];
+      for(const file of files){try{const tabs=/\.csv$/i.test(file.name)?[{name:file.name.replace(/\.csv$/i,''),grid:parseCSV(await file.text())}]:await parseXLSX(await file.arrayBuffer());tabs.forEach(t=>this.add(t.name,t.grid,file.name))}catch(err){errs.push(`${file.name}: ${err.message||'could not be read'}`)}}
+      if(!this.sheets.length){$('#imo').innerHTML=`<div class="err">${esc(errs.join(' ')||'No data found in that file.')}</div>`;return}
+      this.errs=errs;this.show()};
+    $('#imf',md).onchange=e=>go([...e.target.files]);
+    const dz=$('#drop',md);dz.ondragover=e=>{e.preventDefault();dz.style.borderColor='var(--pk)'};dz.ondragleave=()=>dz.style.borderColor='';dz.ondrop=e=>{e.preventDefault();dz.style.borderColor='';go([...e.dataTransfer.files])};
+  },
+  add(name,grid,file){
+    grid=(grid||[]).filter(r=>r&&r.some(c=>String(c??'').trim()));
+    if(grid.length<2)return;
+    let hi=grid.findIndex(r=>r.filter(c=>String(c??'').trim()).length>=2);if(hi<0)hi=0;
+    const head=grid[hi].map(c=>String(c??'').trim()),rows=grid.slice(hi+1);
+    const kind=detect(name,head);
+    this.sheets.push({name,file,head,rows,kind,map:kind?guessMap(kind,head):head.map(()=>''),skipDupes:true});
+  },
+  existing(kind){const d=Admin.d,L=v=>String(v||'').trim().toLowerCase();return new Set(kind==='sponsors'?d.sponsors.map(x=>L(x['Sponsor Name'])):kind==='partners'?d.partners.map(x=>L(x.Partner)):kind==='inventory'?d.inventory.map(x=>L(x.Item)):kind==='members'?d.members.map(x=>L(x.Email)):kind==='resources'?d.resources.map(x=>L(x.Title)):[])},
+  build(sh){
+    if(!sh.kind)return{ok:[],bad:0,dup:[]};
+    const K=KINDS[sh.kind],year=new Date().getFullYear(),now=Date.now();
+    const rows=sh.rows.map(r=>{const o={};sh.map.forEach((f,i)=>{if(!f)return;const v=normalize(sh.kind,f,r[i]);if(v===undefined)return;if(o[f]&&f==='Notes')o[f]+='\n'+v;else if(o[f]==null)o[f]=v});
+      if(sh.kind==='sponsors'&&o['Sponsor Name']){if(!o.Year)o.Year=year;if(o['Payment Status']&&!OPT.pay.includes(o['Payment Status'])){if(!o.Stage)o.Stage=normalize('sponsors','Stage',o['Payment Status']);delete o['Payment Status']}if(!o.Stage&&/prospect|pipeline|lead|pitch/i.test(sh.name))o.Stage='Prospect';if(o['Payment Status']==='Paid'&&o['Amount Received']==null&&o.Commitment)o['Amount Received']=o.Commitment;if(o.Stage&&o.Stage!=='Committed'&&o.Commitment&&!o['Ask Amount']){o['Ask Amount']=o.Commitment;delete o.Commitment}}
+      if(sh.kind==='sessions'&&o.Date){o.Status=new Date(o.Date)<now?'Done':'Upcoming';if(!o.Topic)o.Topic='Sister Circle'}
+      if(sh.kind==='assembly'&&!o.Title&&o.Date)o.Title='Packing day';
+      return o});
+    const has=o=>sh.kind==='members'?(o.Name&&/\S+@\S+\.\S+/.test(o.Email||'')):o[K.key]!=null&&o[K.key]!=='';
+    const ok=rows.filter(has),bad=rows.filter(o=>Object.keys(o).length&&!has(o)).length;
+    const ex=this.existing(sh.kind),seen=new Set(),keyOf=o=>String(sh.kind==='members'?o.Email:o[K.key]||'').trim().toLowerCase();
+    const dup=['sponsors','partners','inventory','members'].includes(sh.kind)?ok.filter(o=>{const k=keyOf(o),d=ex.has(k)||seen.has(k);seen.add(k);return d}):[];
+    return{ok,bad,dup,keyOf,ex};
+  },
+  final(sh){const b=this.build(sh);if(!sh.skipDupes||!b.dup.length)return b.ok;const seen=new Set();return b.ok.filter(o=>{const k=b.keyOf(o),d=b.ex.has(k)||seen.has(k);seen.add(k);return!d})},
+  show(){
+    const out=$('#imo');let total=0;
+    out.innerHTML=(this.errs&&this.errs.length?`<div class="err">${esc(this.errs.join(' '))}</div>`:'')+this.sheets.map((sh,si)=>{
+      const b=this.build(sh),K=KINDS[sh.kind],fin=sh.kind?this.final(sh):[];total+=fin.length;
+      const cols=sh.kind?K.t.map(t=>t[0]).filter(f=>sh.map.includes(f)).slice(0,6):[];
+      return`<div class="isheet"><div class="ih"><div><b>${esc(sh.name)}</b> <span class="sm mu">${sh.rows.length} rows${sh.file&&sh.file!==sh.name?' . '+esc(sh.file):''}</span></div>
+        <label class="sm" style="display:flex;gap:8px;align-items:center"><span class="b">Goes to</span><select class="in" style="width:auto;min-height:38px;padding:6px 10px" data-kind="${si}"><option value="">Skip this tab</option>${Object.entries(KINDS).map(([k,v])=>`<option value="${k}" ${sh.kind===k?'selected':''}>${v.label}</option>`).join('')}</select></label></div>
+        ${sh.kind?`<div class="note" style="margin-bottom:10px">${sh.kind&&detect(sh.name,sh.head)===sh.kind?'I think this is <b>'+esc(K.label.toLowerCase())+'</b>. ':''}<b>${fin.length}</b> ready to import.${b.bad?`<br><span class="flag">${b.bad} ${b.bad===1?'row is':'rows are'} missing ${K.need} and will be skipped.</span>`:''}${b.dup.length?`<br><span class="flag">${b.dup.length} already in your list or listed twice${sh.kind==='members'?' (same email)':''}: ${esc(b.dup.slice(0,4).map(o=>o[K.key]||o.Name||o.Email).join(', '))}${b.dup.length>4?'...':''}</span>`:''}${sh.kind==='members'?'<br>Members you upload are approved automatically. They finish signing up with the same email to set a password.':''}</div>
+        ${b.dup.length?`<label class="chk sm"><input type="checkbox" data-dup="${si}" ${sh.skipDupes?'checked':''}><span>Skip the ones already in the list</span></label>`:''}
+        <details ${b.bad||!cols.length?'open':''}><summary class="sm b" style="cursor:pointer;margin-bottom:8px">Check how the columns match</summary><div class="map" style="margin-bottom:12px">${sh.head.map((h,i)=>`<span><b>${esc(h||'Column '+(i+1))}</b><br><span class="sm mu">${esc(String(sh.rows.find(r=>r[i]!=null&&r[i]!=='')?.[i]??'').slice(0,40))}</span></span><select class="in" data-col="${si}:${i}"><option value="">Skip this column</option>${K.t.map(([f,l])=>`<option value="${f}" ${sh.map[i]===f?'selected':''}>${l}</option>`).join('')}</select>`).join('')}</div></details>
+        ${fin.length&&cols.length?`<div class="tscroll"><table class="tbl prev"><thead><tr>${cols.map(c=>`<th>${esc(K.t.find(t=>t[0]===c)[1])}</th>`).join('')}</tr></thead><tbody>${fin.slice(0,5).map(o=>`<tr>${cols.map(c=>{let v=o[c];if(['Commitment','Amount Received','Ask Amount'].includes(c)&&v!=null)v=money(v);else if(c==='Date'&&v)v=String(v).length>10?fDate(v)+' '+fTime(v):fShort(v);else if(DATEF.has(c)&&v)v=fShort(v);else if(Array.isArray(v))v=v.join(', ');return`<td>${esc(v??'')}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>${fin.length>5?`<p class="sm mu" style="margin-top:6px">and ${fin.length-5} more</p>`:''}`:''}`
+        :`<p class="sm mu">${sh.head.filter(Boolean).slice(0,6).map(esc).join(', ')}. I could not tell where this tab goes. Pick a list above, or leave it skipped.</p>`}</div>`}).join('')
+      +`<div class="mbtns"><button class="btn" id="go" ${total?'':'disabled'}>${I('upload')}Import ${total} ${total===1?'record':'records'}</button><span class="sm mu" style="align-self:center">Not sure? Send the file to Tyler and he can load it for you.</span></div>`;
+    $$('[data-kind]',out).forEach(s=>s.onchange=()=>{const sh=this.sheets[+s.dataset.kind];sh.kind=s.value;sh.map=sh.kind?guessMap(sh.kind,sh.head):sh.head.map(()=>'');this.show()});
+    $$('[data-col]',out).forEach(s=>s.onchange=()=>{const[a,i]=s.dataset.col.split(':').map(Number);this.sheets[a].map[i]=s.value;this.show()});
+    $$('[data-dup]',out).forEach(c=>c.onchange=()=>{this.sheets[+c.dataset.dup].skipDupes=c.checked;this.show()});
+    $('#go',out).onclick=async e=>{
+      const by={};this.sheets.filter(sh=>sh.kind).forEach(sh=>{(by[sh.kind]=by[sh.kind]||[]).push(...this.final(sh))});
+      const batches=Object.entries(by).filter(([,r])=>r.length).map(([kind,rows])=>({kind,rows}));
+      if(!batches.length)return toast('Nothing new to import.');
+      try{const r=await Admin.op({op:'import',batches},e.currentTarget);const parts=Object.entries(r.done||{}).filter(([,n])=>n).map(([k,n])=>`${n} ${KINDS[k].label.toLowerCase()}`);toast('Imported '+(parts.join(', ')||'your data'))}catch(err){}};
+  }
+};
+function parseCSV(t){const rows=[];let row=[],f='',q=false;t=t.replace(/^﻿/,'');for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}else if(c==='"')q=true;else if(c===','){row.push(f);f=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;row.push(f);rows.push(row);row=[];f=''}else f+=c}if(f||row.length){row.push(f);rows.push(row)}return rows}
+// Minimal .xlsx reader: unzips with the browser's built-in DecompressionStream and reads every sheet.
+async function parseXLSX(buf){
+  const u8=new Uint8Array(buf),dv=new DataView(buf);
+  if(u8[0]!==0x50||u8[1]!==0x4b)throw new Error('That does not look like an Excel .xlsx file. In Excel, use File, Save As, and pick Excel Workbook or CSV.');
+  let e=-1;for(let i=u8.length-22;i>=Math.max(0,u8.length-65558);i--)if(dv.getUint32(i,true)===0x06054b50){e=i;break}
+  if(e<0)throw new Error('That Excel file could not be opened.');
+  const n=dv.getUint16(e+10,true);let p=dv.getUint32(e+16,true);const files={};
+  for(let k=0;k<n;k++){const method=dv.getUint16(p+10,true),csize=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),off=dv.getUint32(p+42,true);const name=new TextDecoder().decode(u8.subarray(p+46,p+46+nl));files[name]={method,csize,off};p+=46+nl+xl+cl}
+  const read=async name=>{const f=files[name];if(!f)return null;const ln=dv.getUint16(f.off+26,true),lx=dv.getUint16(f.off+28,true),st=f.off+30+ln+lx,data=u8.subarray(st,st+f.csize);if(f.method===0)return new TextDecoder().decode(data);const s=new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'));return await new Response(s).text()};
+  const X=s=>new DOMParser().parseFromString(s,'application/xml');
+  const ss=[];const sst=await read('xl/sharedStrings.xml');if(sst)[...X(sst).getElementsByTagName('si')].forEach(si=>ss.push([...si.getElementsByTagName('t')].map(t=>t.textContent).join('')));
+  const wb=await read('xl/workbook.xml'),rels=await read('xl/_rels/workbook.xml.rels');
+  let list=[];
+  if(wb&&rels){const R=[...X(rels).getElementsByTagName('Relationship')];list=[...X(wb).getElementsByTagName('sheet')].map(sh=>{const rid=sh.getAttribute('r:id')||sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');const rel=R.find(r=>r.getAttribute('Id')===rid);return rel&&sh.getAttribute('state')!=='hidden'?{name:sh.getAttribute('name'),path:'xl/'+rel.getAttribute('Target').replace(/^\/?(xl\/)?/,'')}:null}).filter(Boolean)}
+  if(!list.length)list=Object.keys(files).filter(f=>/^xl\/worksheets\/sheet\d+\.xml$/.test(f)).map((f,i)=>({name:'Sheet '+(i+1),path:f}));
+  const col=r=>{let c=0;for(const ch of r.replace(/\d+/g,''))c=c*26+ch.charCodeAt(0)-64;return c-1};
+  const out=[];
+  for(const sh of list){const sx=await read(sh.path);if(!sx)continue;const grid=[];
+    [...X(sx).getElementsByTagName('row')].forEach(row=>{const ri=Number(row.getAttribute('r'))-1;const arr=[];[...row.getElementsByTagName('c')].forEach(c=>{const t=c.getAttribute('t'),v=c.getElementsByTagName('v')[0];let val='';if(t==='s')val=ss[Number(v?.textContent)]??'';else if(t==='inlineStr')val=[...c.getElementsByTagName('t')].map(x=>x.textContent).join('');else if(t==='b')val=v?.textContent==='1'?'Yes':'No';else if(t==='str'||t==='e')val=v?.textContent??'';else val=v?Number(v.textContent):'';arr[col(c.getAttribute('r'))]=val});grid[ri>=0?ri:grid.length]=arr});
+    out.push({name:sh.name,grid:[...grid].map(r=>r?Array.from(r,x=>x??''):[])})}
+  return out;
+}
+
+route();
+</script>
+</body>
+</html>
