@@ -20,25 +20,31 @@
 
 [[redirects]]
   from = "/sistercircle"
-  to = "/circle-v3.html"
+  to = "/circle-v4.html"
   status = 200
   force = true
 
 [[redirects]]
   from = "/programs"
-  to = "/circle-v3.html"
+  to = "/circle-v4.html"
   status = 200
   force = true
 
 [[redirects]]
   from = "/circle-v1.html"
-  to = "/circle-v3.html"
+  to = "/circle-v4.html"
   status = 200
   force = true
 
 [[redirects]]
   from = "/circle-v2.html"
-  to = "/circle-v3.html"
+  to = "/circle-v4.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/circle-v3.html"
+  to = "/circle-v4.html"
   status = 200
   force = true
 
